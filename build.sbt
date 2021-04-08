@@ -16,6 +16,7 @@ libraryDependencies += "com.google.cloud.spark" %% "spark-bigquery-with-dependen
 libraryDependencies += "com.google.cloud" % "google-cloud-storage" % "1.113.13"
 libraryDependencies += "com.github.scopt" %% "scopt" % "4.0.0"
 libraryDependencies += "joda-time" % "joda-time" % "2.10.10"
+libraryDependencies += "io.bretty" % "console-table-builder" % "1.2"
 
 libraryDependencies ++= Seq(
   "io.circe" %% "circe-core",

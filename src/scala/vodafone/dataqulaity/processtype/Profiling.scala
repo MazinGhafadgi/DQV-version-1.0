@@ -4,7 +4,7 @@ import org.apache.spark.sql.SparkSession
 import org.joda.time.DateTime
 import vodafone.dataqulaity.RuleSet.{excuteRule, generateSQLRule}
 import vodafone.dataqulaity.config.{ConfigRules, DQJobConfig}
-import vodafone.dataqulaity.output.Metric.{metric, metricInTableFormat}
+import vodafone.dataqulaity.output.Metric.{metric}
 object Profiling {
 
   def profile(configRules: ConfigRules, sparkSession: SparkSession, jobConfig: DQJobConfig) = {
@@ -28,9 +28,10 @@ object Profiling {
         val columns = Array("Description", "SubmissionDateTime", "Rule-id", "RuleValue", "RuleResult", "SourceType", "SourcePath")
         val values = Array( description, new DateTime().toString("yyyy-MM-dd HH:mm:ss"), ruleName, ruleValue, metricResult(df.collect().head.get(0), ruleName), configRules.sourceType, configRules.sourcePath)
 
-        metricInTableFormat(columns, values)
+        //metricInTableFormat(columns, values)
         // metricInTableFormat(columns, values)
-       // metric(metricMap, configRules.sinkType)
+        Console.out.println(Console.GREEN_B + ruleName + Console.RESET )
+        metric(metricMap, configRules.sinkType)
         println(" \n")
       }
     }
