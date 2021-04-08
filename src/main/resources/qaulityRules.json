@@ -1,0 +1,52 @@
+[
+  {
+    "description" : "Data Quality Check against Taxi Data",
+    "operationType": "",
+    "sinkType": "console",
+    "sourceList": [
+      {
+        "source": {
+          "sourceType": "CSVFile",
+          "sourcePath": "src/main/resources/taxi/taxi.csv"
+        }
+      }
+    ],
+    "checkList":[
+      {
+        "check": {
+          "checkType": "SizeRule",
+          "checkValue": "count(*)",
+          "description": "Total number of record in taxi data"
+        }
+      },
+      {
+        "check": {
+          "checkType": "NullCheck",
+          "checkValue": "email is null",
+          "description": "Total number of null values in column email"
+        }
+      },
+      {
+        "check": {
+          "checkType": "ProportionMissingInPercentage",
+          "checkValue": "email",
+          "description": "Total percentage of missing emails"
+        }
+      },
+      {
+        "check": {
+          "checkType": "InRangeRules",
+          "checkValue": "vendor_id IN ('CMT', 'VTS') AND store_and_fwd_flag = 'N'",
+          "description": "Total number of valid vendor_id"
+        }
+      },
+      {
+        "check": {
+          "checkType": "Uniqueness",
+          "checkValue": "hack_license",
+          "description": "Total number of Unique hack_license"
+        }
+      }
+    ]
+  }
+]
