@@ -1,0 +1,10 @@
+# Mac
+.DS_Store
+
+# IntelliJ IDEA
+.idea/
+*.iml
+
+# Project
+target/
+.flattened-pom.xml
