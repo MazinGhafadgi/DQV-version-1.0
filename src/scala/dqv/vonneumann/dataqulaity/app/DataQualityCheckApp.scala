@@ -1,12 +1,14 @@
-package vodafone.dataqulaity.app
+package dqv.vonneumann.dataqulaity.app
 
+import dqv.vonneumann.dataqulaity.{DataQualityProcessType, InvalidConfigurationRule}
+import dqv.vonneumann.dataqulaity.config.{ConfigRules, DQJobConfig, GSConfigConnector}
 import org.apache.spark.sql.SparkSession
-import vodafone.dataqulaity.{DataQualityProcessType, InvalidConfigurationRule}
-import vodafone.dataqulaity.DataQualityProcessType.DataQualityProcessType
-import vodafone.dataqulaity.config.{ConfigRules, DQJobConfig, GSConfigConnector}
-import vodafone.dataqulaity.processtype.Percentage.percentage
-import vodafone.dataqulaity.processtype.Profiling.profile
-import vodafone.dataqulaity.sparksession.SparkSessionFactory.createSparkSession
+import dqv.vonneumann.dataqulaity.DataQualityProcessType
+import dqv.vonneumann.dataqulaity.DataQualityProcessType.DataQualityProcessType
+import dqv.vonneumann.dataqulaity.config.DQJobConfig
+import dqv.vonneumann.dataqulaity.processtype.Percentage.percentage
+import dqv.vonneumann.dataqulaity.processtype.Profiling.profile
+import dqv.vonneumann.dataqulaity.sparksession.SparkSessionFactory.createSparkSession
 import org.slf4j.LoggerFactory
 
 object DataQualityCheckApp {

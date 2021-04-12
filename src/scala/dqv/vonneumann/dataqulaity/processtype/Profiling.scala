@@ -1,10 +1,11 @@
-package vodafone.dataqulaity.processtype
+package dqv.vonneumann.dataqulaity.processtype
 
 import org.apache.spark.sql.SparkSession
 import org.joda.time.DateTime
-import vodafone.dataqulaity.RuleSet.{excuteRule, generateSQLRule}
-import vodafone.dataqulaity.config.{ConfigRules, DQJobConfig}
-import vodafone.dataqulaity.output.Metric.{metric}
+import dqv.vonneumann.dataqulaity.RuleSet.{excuteRule, generateSQLRule}
+import dqv.vonneumann.dataqulaity.config.{ConfigRules, DQJobConfig}
+import dqv.vonneumann.dataqulaity.config.DQJobConfig
+import dqv.vonneumann.dataqulaity.output.Metric.metric
 object Profiling {
 
   def profile(configRules: ConfigRules, sparkSession: SparkSession, jobConfig: DQJobConfig) = {

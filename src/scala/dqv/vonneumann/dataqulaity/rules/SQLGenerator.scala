@@ -1,4 +1,4 @@
-package vodafone.dataqulaity.rules
+package dqv.vonneumann.dataqulaity.rules
 
 object SQLGenerator {
 

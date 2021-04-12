@@ -1,4 +1,4 @@
-package vodafone.dataqulaity.config
+package dqv.vonneumann.dataqulaity.config
 
 import com.typesafe.config.{Config, ConfigFactory}
 

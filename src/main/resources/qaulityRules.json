@@ -1,6 +1,7 @@
 [
   {
-    "description" : "Data Quality Check against Taxi Data",
+    "description" : "Running DQV VON NEUMANN Data Quality Check On Taxi Data",
+    "cloudProvider": "GCP",
     "operationType": "",
     "sinkType": "console",
     "sourceList": [

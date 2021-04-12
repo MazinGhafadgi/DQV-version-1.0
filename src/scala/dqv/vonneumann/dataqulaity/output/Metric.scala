@@ -1,4 +1,4 @@
-package vodafone.dataqulaity.output
+package dqv.vonneumann.dataqulaity.output
 
 //import io.bretty.console.table.{Alignment, ColumnFormatter, Table}
 import org.slf4j.LoggerFactory

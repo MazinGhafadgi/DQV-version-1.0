@@ -1,4 +1,5 @@
-package vodafone.dataqulaity.config
+package dqv.vonneumann.dataqulaity.config
+
 import cats.Traverse
 import io.circe.Decoder.Result
 import io.circe.{Decoder, HCursor, Json, parser}
@@ -8,6 +9,7 @@ import com.google.cloud.storage.{BlobId, StorageOptions}
 import scala.io.Source
 
 case class ConfigRules(description:      String,
+                       cloudProvider:    String,
                        operationType:    String,
                        sinkType:         String,
                        sourceType:       String,
@@ -20,6 +22,7 @@ object GSConfigConnector {
     override def apply(hCursor: HCursor): Result[ConfigRules] =
       for {
         description             <- hCursor.downField("description").as[String]
+        cloudProvider             <- hCursor.downField("cloudProvider").as[String]
         operationType           <- hCursor.downField("operationType").as[String]
         sinkType                <- hCursor.downField("sinkType").as[String]
 
@@ -33,6 +36,7 @@ object GSConfigConnector {
         ruleDescription         <- Traverse[List].traverse(ruleList)(orderItemsJson => {orderItemsJson.hcursor.downField("check").downField("description").as[String]})
       } yield {
         ConfigRules(description,
+                    cloudProvider,
                     operationType,
                     sinkType,
                     sourceTypes(0),

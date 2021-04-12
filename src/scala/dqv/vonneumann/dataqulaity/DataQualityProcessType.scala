@@ -1,5 +1,4 @@
-package vodafone.dataqulaity
-
+package dqv.vonneumann.dataqulaity
 
 object DataQualityProcessType extends Enumeration {
   type DataQualityProcessType = Value

@@ -1,7 +1,7 @@
-package vodafone.dataqulaity
+package dqv.vonneumann.dataqulaity
 
+import dqv.vonneumann.dataqulaity.config.DQJobConfig
 import org.apache.spark.sql.{DataFrame, SparkSession}
-import vodafone.dataqulaity.config.DQJobConfig
 
 
 case class SqlAndMetric(sql: String, metric: String)

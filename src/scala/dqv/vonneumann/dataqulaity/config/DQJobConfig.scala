@@ -1,4 +1,4 @@
-package vodafone.dataqulaity.config
+package dqv.vonneumann.dataqulaity.config
 
 import org.joda.time.format.DateTimeFormat
 

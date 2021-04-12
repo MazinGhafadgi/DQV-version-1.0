@@ -1,9 +1,9 @@
-package vodafone.dataqulaity.processtype
+package dqv.vonneumann.dataqulaity.processtype
 
+import dqv.vonneumann.dataqulaity.config.ConfigRules
 import org.apache.spark.sql.SparkSession
-import vodafone.dataqulaity.DataQualityProcessType.DataQualityProcessType
-import vodafone.dataqulaity.config.ConfigRules
-import vodafone.dataqulaity.rules.SQLGenerator.{generateSQLForPercentage, generateSQLForStatusDataAssessment, generateSQLForTotalNumberOfrecord}
+import dqv.vonneumann.dataqulaity.DataQualityProcessType.DataQualityProcessType
+import dqv.vonneumann.dataqulaity.rules.SQLGenerator.{generateSQLForPercentage, generateSQLForStatusDataAssessment, generateSQLForTotalNumberOfrecord}
 
 object Percentage {
 

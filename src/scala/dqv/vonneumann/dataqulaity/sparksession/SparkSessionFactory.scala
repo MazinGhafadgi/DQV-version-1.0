@@ -1,4 +1,4 @@
-package vodafone.dataqulaity.sparksession
+package dqv.vonneumann.dataqulaity.sparksession
 
 import org.apache.spark.sql.SparkSession
 
