@@ -19,7 +19,7 @@ object RuleSet {
           val sql = size(target)
           println(sql)
           sql
-        case "StatisticsRule"                         => function(ruleValue, target)
+        case "StatisticsRule"                         => function(ruleValue, target, ruleValue)
         case "Uniqueness"                             => uniqueness(ruleValue, target)
         case "ProportionMissingInPercentage"          => s"SELECT CAST (SUM (CASE WHEN $ruleValue is NULL THEN 1 ELSE 0 END) as float) / COUNT(*) AS ProportionMissing FROM $sourceName"
 
@@ -55,7 +55,7 @@ object RuleSet {
 
 
  private def size(target: String)                            = s"SELECT count(*) FROM $target"
- private def function(functionValue: String, target: String) = s"SELECT $functionValue FROM $target"
+ private def function(functionValue: String, target: String, filter: String) = s"SELECT $functionValue FROM $target where $filter"
  private def uniqueness(column: String, target: String)      = s"SELECT count(distinct $column) FROM $target"
  private def default(filter: String, target: String)         = s"SELECT count(*) FROM $target where $filter"
 

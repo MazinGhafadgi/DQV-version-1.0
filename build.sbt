@@ -6,8 +6,6 @@ organizationName := "vodafone"
 name             := "Data_Quality_Tool"
 val circeVersion = "0.12.3"
 
-resolvers += "Spark Packages Repo" at "http://dl.bintray.com/spark-packages/maven"
-
 
 libraryDependencies += "org.apache.spark" % "spark-sql_2.12" % "3.1.1"
 libraryDependencies += "org.scalatest" %% "scalatest" % "3.0.1" % "test"

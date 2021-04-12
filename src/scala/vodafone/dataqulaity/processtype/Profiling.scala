@@ -17,9 +17,10 @@ object Profiling {
         val description = ruleNameAndValue._2.asInstanceOf[String]
         val sql = generateSQLRule(ruleName, ruleValue, configRules.sourceType, configRules.sourcePath, jobConfig)
         lazy val df = excuteRule(sql, sparkSession, configRules.sourceType, configRules.sourcePath)
+        lazy val metricValue = metricResult(df.collect().head.get(0), ruleName)
         lazy val metricMap = Map("Metric-id"     -> ruleName,
                                  "Rule"          -> ruleValue,
-                                 "Metric-result" -> metricResult(df.collect().head.get(0), ruleName),
+                                 "Metric-result" -> metricValue,
                                  "SourceType"    -> configRules.sourceType,
                                  "SourcePath"    -> configRules.sourcePath,
                                  "Description"   -> description,
@@ -28,9 +29,9 @@ object Profiling {
         val columns = Array("Description", "SubmissionDateTime", "Rule-id", "RuleValue", "RuleResult", "SourceType", "SourcePath")
         val values = Array( description, new DateTime().toString("yyyy-MM-dd HH:mm:ss"), ruleName, ruleValue, metricResult(df.collect().head.get(0), ruleName), configRules.sourceType, configRules.sourcePath)
 
-        //metricInTableFormat(columns, values)
-        // metricInTableFormat(columns, values)
-        Console.out.println(Console.GREEN_B + ruleName + Console.RESET )
+
+        if(ruleName == "ProportionMissingInPercentage" && metricValue.substring(0, metricValue.length -1).toDouble > 10.0) Console.out.println(Console.RED_B + ruleName + Console.RESET )
+        else Console.out.println(Console.GREEN_B + ruleName + Console.RESET )
         metric(metricMap, configRules.sinkType)
         println(" \n")
       }
