@@ -2,7 +2,7 @@ package dqv.vonneumann.dataqulaity.processtype
 
 import org.apache.spark.sql.SparkSession
 import org.joda.time.DateTime
-import dqv.vonneumann.dataqulaity.RuleSet.{excuteRule, generateSQLRule}
+import dqv.vonneumann.dataqulaity.RuleSet.{executeRule, generateSQLRule}
 import dqv.vonneumann.dataqulaity.config.{ConfigRules, DQJobConfig}
 import dqv.vonneumann.dataqulaity.config.DQJobConfig
 import dqv.vonneumann.dataqulaity.output.Metric.metric
@@ -10,15 +10,14 @@ object Profiling {
 
   def profile(configRules: ConfigRules, sparkSession: SparkSession, jobConfig: DQJobConfig) = {
 
-
     configRules.ruleNameAndValue.foreach{
       ruleNameAndValue => {
         val ruleName = ruleNameAndValue._1._1.asInstanceOf[String]
         val ruleValue = ruleNameAndValue._1._2.asInstanceOf[String]
         val description = ruleNameAndValue._2.asInstanceOf[String]
-        val sql = generateSQLRule(ruleName, ruleValue, configRules.sourceType, configRules.sourcePath, jobConfig)
-        lazy val df = excuteRule(sql, sparkSession, configRules.sourceType, configRules.sourcePath)
-        lazy val metricValue = metricResult(df.collect().head.get(0), ruleName)
+        val sql = generateSQLRule(ruleName, ruleValue, configRules.sourceType, configRules.sourcePath, configRules)
+        lazy val df = executeRule(sql, sparkSession, configRules.sourceType, configRules.sourcePath)
+        lazy val metricValue = metricResult(df.collect().head.get(0), configRules.reportType, ruleName)
         lazy val metricMap = Map("Metric-id"     -> ruleName,
                                  "Rule"          -> ruleValue,
                                  "Metric-result" -> metricValue,
@@ -27,9 +26,9 @@ object Profiling {
                                  "Description"   -> description,
                                  "SubmissionDateTime" -> new DateTime().toString("yyyy-MM-dd HH:mm:ss"))
 
-        val columns = Array("Description", "SubmissionDateTime", "Rule-id", "RuleValue", "RuleResult", "SourceType", "SourcePath")
+ /*       val columns = Array("Description", "SubmissionDateTime", "Rule-id", "RuleValue", "RuleResult", "SourceType", "SourcePath")
         val values = Array( description, new DateTime().toString("yyyy-MM-dd HH:mm:ss"), ruleName, ruleValue, metricResult(df.collect().head.get(0), ruleName), configRules.sourceType, configRules.sourcePath)
-
+*/
 
         if(ruleName == "ProportionMissingInPercentage" && metricValue.substring(0, metricValue.length -1).toDouble > 10.0) Console.out.println(Console.RED_B + ruleName + Console.RESET )
         else Console.out.println(Console.GREEN_B + ruleName + Console.RESET )
@@ -40,8 +39,8 @@ object Profiling {
   }
 
 
-  def metricResult(value: Any, ruleName: String) = {
-    if(ruleName.equals("ProportionMissingInPercentage")){
+  def metricResult(value: Any, reportType: String, ruleName: String) = {
+    if(reportType == "percentage" && ruleName != "StatisticsRule"){
       val inPercent = value.asInstanceOf[Double] * 100
       val formatToTwoDigits = BigDecimal(inPercent).setScale(2, BigDecimal.RoundingMode.HALF_UP).toDouble
       formatToTwoDigits + "%"

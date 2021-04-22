@@ -9,9 +9,9 @@ import com.google.cloud.storage.{BlobId, StorageOptions}
 import scala.io.Source
 
 case class ConfigRules(description:      String,
-                       cloudProvider:    String,
                        operationType:    String,
                        sinkType:         String,
+                       reportType:       String,
                        sourceType:       String,
                        sourcePath:       String,
                        ruleNameAndValue: List[((String, String), String)])
@@ -22,9 +22,9 @@ object GSConfigConnector {
     override def apply(hCursor: HCursor): Result[ConfigRules] =
       for {
         description             <- hCursor.downField("description").as[String]
-        cloudProvider             <- hCursor.downField("cloudProvider").as[String]
         operationType           <- hCursor.downField("operationType").as[String]
         sinkType                <- hCursor.downField("sinkType").as[String]
+        reportType              <- hCursor.downField("reportType").as[String]
 
         sourceList              <- hCursor.downField("sourceList").as[List[Json]]
         sourceTypes             <-  Traverse[List].traverse(sourceList)(itemJson => itemJson.hcursor.downField("source").downField("sourceType").as[String])
@@ -36,9 +36,9 @@ object GSConfigConnector {
         ruleDescription         <- Traverse[List].traverse(ruleList)(orderItemsJson => {orderItemsJson.hcursor.downField("check").downField("description").as[String]})
       } yield {
         ConfigRules(description,
-                    cloudProvider,
                     operationType,
                     sinkType,
+                    reportType,
                     sourceTypes(0),
                     sourcePaths(0),
                     rileNames.zip(ruleValues).zip(ruleDescription))

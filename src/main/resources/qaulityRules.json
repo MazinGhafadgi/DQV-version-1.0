@@ -1,79 +1,51 @@
 [
   {
-    "description" : "Running DQV VON NEUMANN Data Quality Check On Taxi Data",
-    "cloudProvider": "GCP",
+    "description" : "Running DQV VON NEUMANN Data Quality Check On Telco Data",
     "operationType": "",
     "sinkType": "console",
+    "reportType": "percentage",
     "sourceList": [
       {
         "source": {
           "sourceType": "CSVFile",
-          "sourcePath": "src/main/resources/taxi/taxi.csv"
+          "sourcePath": "src/main/resources/telco/Telco-more-customr-chum.csv"
         }
       }
     ],
     "checkList":[
       {
         "check": {
-          "checkType": "SizeRule",
-          "checkValue": "count(*)",
-          "description": "Total number of record in taxi data"
-        }
-      },
-      {
-        "check": {
-          "checkType": "ProportionMissingInPercentage",
-          "checkValue": "email",
-          "description": "Total percentage of missing emails"
-        }
-      },
-      {
-        "check": {
-          "checkType": "InRangeRules",
-          "checkValue": "vendor_id IN ('CMT', 'VTS')",
-          "description": "Total number of valid vendor_id In range of CMT and VTS"
-        }
-      },
-      {
-        "check": {
-          "checkType": "Uniqueness",
-          "checkValue": "hack_license",
-          "description": "Total number of Unique hack_license"
+          "checkType": "NotNullCheck",
+          "checkValue": "gender is not null",
+          "description": "Percentage of not null value in column gender"
         }
       },
       {
         "check": {
           "checkType": "StatisticsRule",
-          "checkValue": "MAX(tip_amount)",
-          "description": "Maximum tip amount"
+          "checkValue": "MIN(MonthlyCharges)",
+          "description": "Maximum monthly changes"
         }
       },
       {
         "check": {
-          "checkType": "DateTimeRule",
-          "checkValue": "dropoff_datetime",
-          "description": "Total number of valid dates"
-        }
-      },
-      {
-          "check": {
-            "checkType": "EmailRule",
-            "checkValue": "email",
-            "description": "Total number of valid emails"
-          }
-        },
-      {
-        "check": {
-          "checkType": "NullCheck",
-          "checkValue": "email is null",
-          "description": "Total number of null values in column emails"
+          "checkType": "InRangeRules",
+          "checkValue": "PaymentMethod IN('Electronic check', 'Mailed check', 'Credit card (automatic)', 'Bank transfer (automatic)')",
+          "description": "Count of PaymentMethod"
         }
       },
       {
         "check": {
-          "checkType": "InvalidEmailRule",
-          "checkValue": "email",
-          "description": "Total number of invalid emails"
+          "checkType": "Uniqueness",
+          "checkValue": "customerID",
+          "description": "Percentage of customerID Uniqueness"
+        }
+      },
+      {
+        "check": {
+          "checkType": "ProportionMissingInPercentage",
+          "checkValue": "customerID",
+          "description": "Percentage of missing customerID"
         }
       }
     ]
