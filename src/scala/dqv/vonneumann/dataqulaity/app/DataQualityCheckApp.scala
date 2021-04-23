@@ -1,7 +1,7 @@
 package dqv.vonneumann.dataqulaity.app
 
 import dqv.vonneumann.dataqulaity.InvalidConfigurationRule
-import dqv.vonneumann.dataqulaity.config.{DQJobConfig, DQVConfiguration, GSConfigConnector}
+import dqv.vonneumann.dataqulaity.config.{DQJobConfig, DQVConfigLoader, DQVConfiguration}
 import dqv.vonneumann.dataqulaity.DataQualityProcessType
 import dqv.vonneumann.dataqulaity.DataQualityProcessType.DataQualityProcessType
 import dqv.vonneumann.dataqulaity.RulesExecutor.execute
@@ -21,9 +21,8 @@ object DataQualityCheckApp {
     val runtimeArgument = RuntimeArgument(dqJobConfig.runningMode, typeOfReport)
     val sparkSession =    createSparkSession(runtimeArgument.runningMode)
 
-    GSConfigConnector
-                    .loadConfigRules(runtimeArgument.runningMode, dqJobConfig)
-                    .fold(
+    DQVConfigLoader.load(runtimeArgument.runningMode, dqJobConfig)
+                   .fold(
                            error            => reportConfigurationError(error, dqJobConfig),
                            dqConfigurations => processDQConfiguration(dqConfigurations, sparkSession, dqJobConfig)
                          )

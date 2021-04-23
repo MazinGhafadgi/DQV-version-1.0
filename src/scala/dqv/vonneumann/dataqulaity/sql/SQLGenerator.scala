@@ -2,19 +2,18 @@ package dqv.vonneumann.dataqulaity.sql
 
 import dqv.vonneumann.dataqulaity.config.DQVConfiguration
 
-
 case class SqlAndMetric(sql: String, metric: String)
 
 object SQLGenerator {
 
-  def generateSQLRule(ruleName: String, ruleValue: String, sourceName: String, sourcePath: String, configRules: DQVConfiguration): String = {
+  def generateSQLRule(ruleType: String, ruleValue: String, sourceName: String, sourcePath: String, configRules: DQVConfiguration): String = {
    // val window = s"WHERE ${jobConfig.column} BETWEEN '${jobConfig.startDate}' AND '${jobConfig.endDate}'"
     val reportType = configRules.reportType
     val target = if(sourceName == "BigQuery") sourcePath else sourceName
 
     if(ruleValue.toLowerCase.startsWith("select")) ruleValue
     else {
-      ruleName match {
+      ruleType match {
         case "SizeRule" => size(target)
         case "StatisticsRule"                         => function(ruleValue, target)
         case "Uniqueness"                             => if(reportType == "percentage") uniquenessInPercentage(ruleValue, target) else uniqueness(ruleValue, target)

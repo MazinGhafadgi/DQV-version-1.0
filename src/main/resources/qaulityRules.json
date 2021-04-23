@@ -1,90 +1,82 @@
 [
   {
     "description" : "Running DQV VON NEUMANN Data Quality Check On Telco Data",
-    "operationType": "",
-    "sinkType": "console",
-    "reportType": "percentage",
-    "sourceList": [
-      {
-        "source": {
-          "sourceType": "CSV",
-          "sourcePath": "src/main/resources/telco/telco-sample-customer-chum.csv"
-        }
-      }
-    ],
-    "checkList":[
-      {
-        "check": {
-          "checkType": "NotNullCheck",
-          "checkValue": "gender is not null",
-          "description": "Percentage of not null value in column gender"
-        }
-      },
-      {
-        "check": {
-          "checkType": "StatisticsRule",
-          "checkValue": "MIN(MonthlyCharges)",
-          "description": "Maximum monthly changes"
-        }
-      },
-      {
-        "check": {
-          "checkType": "InRangeRules",
-          "checkValue": "PaymentMethod IN('Electronic check', 'Mailed check', 'Credit card (automatic)', 'Bank transfer (automatic)')",
-          "description": "Count of PaymentMethod"
-        }
-      },
-      {
-        "check": {
-          "checkType": "Uniqueness",
-          "checkValue": "customerID",
-          "description": "Percentage of customerID Uniqueness"
-        }
-      },
-      {
-        "check": {
-          "checkType": "ProportionMissingInPercentage",
-          "checkValue": "customerID",
-          "description": "Percentage of missing customerID"
-        }
-      }
-    ]
+    "process.type": "BATCH",
+    "sink.type"   : "console",
+    "report.type" : "percentage",
+    "source"      : {
+                      "source.type": "CSV",
+                      "source.path": "src/main/resources/telco/telco-sample-customer-chum.csv"
+                     },
+    "rules"       :[
+                    {
+                     "rule": {
+                              "type": "NotNullCheck",
+                              "value": "gender is not null",
+                              "description": "Percentage of not null value in column gender"
+                             }
+                    },
+                    {
+                     "rule": {
+                              "type": "StatisticsRule",
+                              "value": "MIN(MonthlyCharges)",
+                              "description": "Maximum monthly changes"
+                             }
+                    },
+                    {
+                     "rule": {
+                              "type": "InRangeRules",
+                              "value": "PaymentMethod IN('Electronic check', 'Mailed check', 'Credit card (automatic)', 'Bank transfer (automatic)')",
+                              "description": "Count of PaymentMethod"
+                             }
+                    },
+                    {
+                     "rule": {
+                              "type": "Uniqueness",
+                              "value": "customerID",
+                              "description": "Percentage of customerID Uniqueness"
+                           }
+                    },
+                    {
+                     "rule": {
+                              "type": "ProportionMissingInPercentage",
+                              "value": "customerID",
+                              "description": "Percentage of missing customerID"
+                             }
+                    }
+                   ]
   },
   {
-    "description" : "Running DQV VON NEUMANN Data Quality Check On Sample Parquet file",
-    "operationType": "",
-    "sinkType": "console",
-    "reportType": "count",
-    "sourceList": [
-      {
-        "source": {
-          "sourceType": "Parquet",
-          "sourcePath": "src/main/resources/sample/"
-        }
-      }
-    ],
-    "checkList":[
-      {
-        "check": {
-          "checkType": "SizeRule",
-          "checkValue": "count(*)",
-          "description": "Total number of parquet rows"
-        }
-      },
-      {
-        "check": {
-          "checkType": "NullCheck",
-          "checkValue": "age is null",
-          "description": "Total number of null values in column age"
-        }
-      },
-      {
-        "check": {
-          "checkType": "InvalidEmailRule",
-          "checkValue": "email",
-          "description": "Total number of invalid emails"
-        }
-      }
-    ]
+    "description"  : "Running DQV VON NEUMANN Data Quality Check On Sample Parquet file",
+    "process.type" : "BATCH",
+    "sink.type"    : "console",
+    "report.type"  : "count",
+    "source"       : {
+                      "source.type": "Parquet",
+                      "source.path": "src/main/resources/sample/"
+                     },
+     "rules"       :[
+                     {
+                      "rule": {
+                               "type": "SizeRule",
+                               "value": "count(*)",
+                               "description": "Total number of parquet rows"
+                              }
+                     },
+                     {
+                      "rule": {
+                               "type": "NullCheck",
+                               "value": "age is null",
+                               "description": "Total number of null values in column age"
+                              }
+                     },
+                     {
+                      "rule": {
+                               "type": "InvalidEmailRule",
+                               "value": "email",
+                               "description": "Total number of invalid emails"
+                              }
+                     }
+                    ]
   }
 ]

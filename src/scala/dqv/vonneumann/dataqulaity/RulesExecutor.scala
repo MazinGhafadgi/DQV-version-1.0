@@ -10,26 +10,26 @@ object RulesExecutor {
 
   def execute(dqConfiguration: DQVConfiguration, sparkSession: SparkSession, jobConfig: DQJobConfig) = {
 
-    dqConfiguration.checkList.foreach {
-      check => {
-        val ruleName    =  check._1._1.asInstanceOf[String]
-        val ruleValue   =  check._1._2.asInstanceOf[String]
-        val description =  check._2.asInstanceOf[String]
-        val sourceType  =  dqConfiguration.sourceType
-        val sourcePath  =  dqConfiguration.sourcePath
-        val reportType  =  dqConfiguration.reportType
-        val sinkType    =  dqConfiguration.sinkType
-        val sql         =  generateSQLRule(ruleName, ruleValue, sourceType, sourcePath, dqConfiguration)
+    dqConfiguration.rules.foreach {
+      rule => {
+        val ruleType =  rule._1._1.asInstanceOf[String]
+        val ruleValue    =  rule._1._2.asInstanceOf[String]
+        val description  =  rule._2.asInstanceOf[String]
+        val sourceType   =  dqConfiguration.sourceType
+        val sourcePath   =  dqConfiguration.sourcePath
+        val reportType   =  dqConfiguration.reportType
+        val sinkType     =  dqConfiguration.sinkType
+        val sql          =  generateSQLRule(ruleType, ruleValue, sourceType, sourcePath, dqConfiguration)
         lazy val df = executeSQLRule(sql, sparkSession, sourceType, sourcePath)
-        lazy val result = extractExecutionResult(df.collect().head.get(0), reportType, ruleName)
-        metricGenerator(ruleName, ruleValue, result, sourceType, sourcePath, description, sinkType)
+        lazy val result = extractExecutionResult(df.collect().head.get(0), reportType, ruleType)
+        metricGenerator(ruleType, ruleValue, result, sourceType, sourcePath, description, sinkType)
       }
     }
   }
 
 
-  private def extractExecutionResult(value: Any, reportType: String, ruleName: String) = {
-    if(reportType == "percentage" && ruleName != "StatisticsRule"){
+  private def extractExecutionResult(value: Any, reportType: String, ruleType: String) = {
+    if(reportType == "percentage" && ruleType != "StatisticsRule"){
       val inPercent = value.asInstanceOf[Double] * 100
       val formatToTwoDigits = BigDecimal(inPercent).setScale(2, BigDecimal.RoundingMode.HALF_UP).toDouble
       formatToTwoDigits + "%"
