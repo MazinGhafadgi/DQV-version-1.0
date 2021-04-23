@@ -8,18 +8,18 @@ import com.google.cloud.storage.{BlobId, StorageOptions}
 
 import scala.io.Source
 
-case class ConfigRules(description:      String,
-                       operationType:    String,
-                       sinkType:         String,
-                       reportType:       String,
-                       sourceType:       String,
-                       sourcePath:       String,
-                       ruleNameAndValue: List[((String, String), String)])
+case class DQVConfiguration(description:      String,
+                            operationType:    String,
+                            sinkType:         String,
+                            reportType:       String,
+                            sourceType:       String,
+                            sourcePath:       String,
+                            checkList: List[((String, String), String)])
 
 object GSConfigConnector {
   /** circe is a library that creates a shapeless dependency that has an automatic deserialization function that serializes JSON string to a domain model **/
-  implicit val decoder: Decoder[ConfigRules] = new Decoder[ConfigRules] {
-    override def apply(hCursor: HCursor): Result[ConfigRules] =
+  implicit val decoder: Decoder[DQVConfiguration] = new Decoder[DQVConfiguration] {
+    override def apply(hCursor: HCursor): Result[DQVConfiguration] =
       for {
         description             <- hCursor.downField("description").as[String]
         operationType           <- hCursor.downField("operationType").as[String]
@@ -35,7 +35,7 @@ object GSConfigConnector {
         ruleValues              <- Traverse[List].traverse(ruleList)(orderItemsJson => {orderItemsJson.hcursor.downField("check").downField("checkValue").as[String]})
         ruleDescription         <- Traverse[List].traverse(ruleList)(orderItemsJson => {orderItemsJson.hcursor.downField("check").downField("description").as[String]})
       } yield {
-        ConfigRules(description,
+        DQVConfiguration(description,
                     operationType,
                     sinkType,
                     reportType,
@@ -52,10 +52,10 @@ object GSConfigConnector {
       val blobId = BlobId.of(dqJobConfig.bucket, dqJobConfig.jsonFile)
       val content = storage.readAllBytes(blobId)
       val contentString = new String(content, UTF_8)
-      parser.decode[List[ConfigRules]](contentString)
+      parser.decode[List[DQVConfiguration]](contentString)
     }
     else{
-      parser.decode[List[ConfigRules]](Source.fromFile(s"src/main/resources/${dqJobConfig.jsonFile}").mkString)
+      parser.decode[List[DQVConfiguration]](Source.fromFile(s"src/main/resources/${dqJobConfig.jsonFile}").mkString)
     }
   }
 

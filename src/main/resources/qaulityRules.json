@@ -7,7 +7,7 @@
     "sourceList": [
       {
         "source": {
-          "sourceType": "CSVFile",
+          "sourceType": "CSV",
           "sourcePath": "src/main/resources/telco/Telco-more-customr-chum.csv"
         }
       }
@@ -46,6 +46,43 @@
           "checkType": "ProportionMissingInPercentage",
           "checkValue": "customerID",
           "description": "Percentage of missing customerID"
+        }
+      }
+    ]
+  },
+  {
+    "description" : "Running DQV VON NEUMANN Data Quality Check On Sample Parquet file",
+    "operationType": "",
+    "sinkType": "console",
+    "reportType": "count",
+    "sourceList": [
+      {
+        "source": {
+          "sourceType": "Parquet",
+          "sourcePath": "src/main/resources/sample/"
+        }
+      }
+    ],
+    "checkList":[
+      {
+        "check": {
+          "checkType": "SizeRule",
+          "checkValue": "count(*)",
+          "description": "Total number of parquet rows"
+        }
+      },
+      {
+        "check": {
+          "checkType": "NullCheck",
+          "checkValue": "age is null",
+          "description": "Total number of null values in column age"
+        }
+      },
+      {
+        "check": {
+          "checkType": "InvalidEmailRule",
+          "checkValue": "email",
+          "description": "Total number of invalid emails"
         }
       }
     ]
