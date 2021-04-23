@@ -8,7 +8,7 @@
       {
         "source": {
           "sourceType": "CSV",
-          "sourcePath": "src/main/resources/telco/Telco-more-customr-chum.csv"
+          "sourcePath": "src/main/resources/telco/telco-sample-customer-chum.csv"
         }
       }
     ],

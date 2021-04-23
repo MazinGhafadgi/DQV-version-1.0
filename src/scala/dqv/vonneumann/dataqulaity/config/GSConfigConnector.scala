@@ -8,6 +8,9 @@ import com.google.cloud.storage.{BlobId, StorageOptions}
 
 import scala.io.Source
 
+
+case class Check(ruleName: List[String], ruleValue: List[String], descriptios: List[String])
+
 case class DQVConfiguration(description:      String,
                             operationType:    String,
                             sinkType:         String,
@@ -27,11 +30,11 @@ object GSConfigConnector {
         reportType              <- hCursor.downField("reportType").as[String]
 
         sourceList              <- hCursor.downField("sourceList").as[List[Json]]
-        sourceTypes             <-  Traverse[List].traverse(sourceList)(itemJson => itemJson.hcursor.downField("source").downField("sourceType").as[String])
-        sourcePaths             <-  Traverse[List].traverse(sourceList)(itemJson => itemJson.hcursor.downField("source").downField("sourcePath").as[String])
+        sourceTypes             <- Traverse[List].traverse(sourceList)(itemJson => itemJson.hcursor.downField("source").downField("sourceType").as[String])
+        sourcePaths             <- Traverse[List].traverse(sourceList)(itemJson => itemJson.hcursor.downField("source").downField("sourcePath").as[String])
 
         ruleList                <- hCursor.downField("checkList").as[List[Json]]
-        rileNames               <- Traverse[List].traverse(ruleList)(itemJson => itemJson.hcursor.downField("check").downField("checkType").as[String])
+        rulesNames              <- Traverse[List].traverse(ruleList)(itemJson => itemJson.hcursor.downField("check").downField("checkType").as[String])
         ruleValues              <- Traverse[List].traverse(ruleList)(orderItemsJson => {orderItemsJson.hcursor.downField("check").downField("checkValue").as[String]})
         ruleDescription         <- Traverse[List].traverse(ruleList)(orderItemsJson => {orderItemsJson.hcursor.downField("check").downField("description").as[String]})
       } yield {
@@ -41,7 +44,7 @@ object GSConfigConnector {
                     reportType,
                     sourceTypes(0),
                     sourcePaths(0),
-                    rileNames.zip(ruleValues).zip(ruleDescription))
+                    rulesNames.zip(ruleValues).zip(ruleDescription))
       }
   }
 
