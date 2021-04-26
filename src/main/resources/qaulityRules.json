@@ -3,7 +3,7 @@
     "description": "Running DQV VON NEUMANN Data Quality Check On Telco Data",
     "process.type": "BATCH",
     "sink.type": "console",
-    "report.type": "count",
+    "report.type": "percentage",
     "source": {
       "source.type": "CSV",
       "source.path": "src/main/resources/telco/telco-sample-customer-chum.csv"
@@ -11,9 +11,9 @@
     "rules": [
       {
         "rule": {
-          "type": "NotNullCheck",
-          "value": "gender is not null",
-          "description": "Percentage of not null value in column gender"
+          "type": "NullCheck",
+          "value": "gender is null",
+          "description": "Percentage of null value in column gender"
         }
       },
       {
