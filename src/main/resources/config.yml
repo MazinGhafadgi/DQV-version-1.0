@@ -1,0 +1,54 @@
+---
+#Sample Telco CSV file
+- description: Running DQV VON NEUMANN Data Quality Check On Telco Data
+  process.type: BATCH
+  sink.type: console
+  report.type: percentage
+  source:
+    source.type: CSV
+    source.path: src/main/resources/telco/telco-sample-customer-chum.csv
+  #Telco Data quality rules
+  rules:
+    - rule:
+        type: NullCheck
+        value: gender is null
+        description: Percentage of null value in column gender
+    - rule:
+        type: StatisticsRule
+        value: MIN(MonthlyCharges)
+        description: Maximum monthly changes
+    - rule:
+        type: InRangeRules
+        value: PaymentMethod IN('Electronic check', 'Mailed check', 'Credit card (automatic)','Bank transfer (automatic)')
+        description: Count of PaymentMethod
+    - rule:
+        type: Uniqueness
+        value: customerID
+        description: Percentage of customerID Uniqueness
+    - rule:
+        type: ProportionMissingInPercentage
+        value: customerID
+        description: Percentage of missing customerID
+
+#Sample parquet file
+- description: Running DQV VON NEUMANN Data Quality Check On Sample Parquet file
+  process.type: BATCH
+  sink.type: console
+  report.type: count
+  source:
+    source.type: Parquet
+    source.path: src/main/resources/sample/
+  # parquet Data quality rules
+  rules:
+    - rule:
+        type: SizeRule
+        value: count(*)
+        description: Total number of parquet rows
+    - rule:
+        type: NullCheck
+        value: age is null
+        description: Total number of null values in column age
+    - rule:
+        type: InvalidEmailRule
+        value: email
+        description: Total number of invalid emails

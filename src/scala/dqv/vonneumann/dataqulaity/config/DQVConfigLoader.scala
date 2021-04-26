@@ -4,11 +4,6 @@ import cats.Traverse
 import io.circe.Decoder.Result
 import io.circe.{Decoder, HCursor, Json, parser}
 import cats.implicits._
-import com.google.cloud.storage.{BlobId, StorageOptions}
-
-import scala.io.Source
-
-
 case class Check(ruleName: List[String], ruleValue: List[String], descriptions: List[String])
 
 case class DQVConfiguration(description:      String,
@@ -45,18 +40,6 @@ object DQVConfigLoader {
       }
   }
 
-  def load(runningInCluster: String, dqJobConfig: DQJobConfig): Either[io.circe.Error, List[DQVConfiguration]] = {
-    if(runningInCluster == "cluster") {
-      import java.nio.charset.StandardCharsets.UTF_8
-      val storage = StorageOptions.getDefaultInstance().getService()
-      val blobId = BlobId.of(dqJobConfig.bucket, dqJobConfig.jsonFile)
-      val content = storage.readAllBytes(blobId)
-      val contentString = new String(content, UTF_8)
-      parser.decode[List[DQVConfiguration]](contentString)
-    }
-    else{
-      parser.decode[List[DQVConfiguration]](Source.fromFile(s"src/main/resources/${dqJobConfig.jsonFile}").mkString)
-    }
-  }
+  def load(jsonContent: String): Either[io.circe.Error, List[DQVConfiguration]] = parser.decode[List[DQVConfiguration]](jsonContent)
 
 }

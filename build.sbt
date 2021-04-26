@@ -15,6 +15,7 @@ libraryDependencies += "com.google.cloud" % "google-cloud-storage" % "1.113.13"
 libraryDependencies += "com.github.scopt" %% "scopt" % "4.0.0"
 libraryDependencies += "joda-time" % "joda-time" % "2.10.10"
 libraryDependencies += "io.bretty" % "console-table-builder" % "1.2"
+libraryDependencies += "io.circe" %% "circe-yaml" % "0.12.0"
 
 libraryDependencies ++= Seq(
   "io.circe" %% "circe-core",
@@ -31,4 +32,4 @@ assemblyMergeStrategy in assembly := {
 assemblyJarName in assembly := "Data-quality-tool-1.0.jar"
 
 
-mainClass in assembly := Some("vodafone.dataqulaity.app.DataQualityCheckApp")
+mainClass in assembly := Some("dqv.vonneumann.dataqulaity.app.DataQualityCheckApp")

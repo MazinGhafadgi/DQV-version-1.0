@@ -1,11 +1,12 @@
 package dqv.vonneumann.dataqulaity.app
 
 import dqv.vonneumann.dataqulaity.InvalidConfigurationRule
-import dqv.vonneumann.dataqulaity.config.{DQJobConfig, DQVConfigLoader, DQVConfiguration}
+import dqv.vonneumann.dataqulaity.config.{DQJobConfig, DQVConfigLoader, DQVConfiguration, YAMConfigLoader}
 import dqv.vonneumann.dataqulaity.DataQualityProcessType
 import dqv.vonneumann.dataqulaity.DataQualityProcessType.DataQualityProcessType
 import dqv.vonneumann.dataqulaity.RulesExecutor.execute
 import dqv.vonneumann.dataqulaity.sparksession.SparkSessionFactory.createSparkSession
+import io.circe.{Json, ParsingFailure}
 import org.apache.spark.sql.SparkSession
 import org.slf4j.LoggerFactory
 
@@ -20,12 +21,19 @@ object DataQualityCheckApp {
     val typeOfReport =    DataQualityProcessType.withName(dqJobConfig.reportType)
     val runtimeArgument = RuntimeArgument(dqJobConfig.runningMode, typeOfReport)
     val sparkSession =    createSparkSession(runtimeArgument.runningMode)
+    //load yaml and convert it to json structure
+    YAMConfigLoader.toJson(runtimeArgument.runningMode, dqJobConfig)
+                   .fold(error => reportErrors(error, dqJobConfig),
+                         json  => loadRules(json, sparkSession, dqJobConfig))
+  }
 
-    DQVConfigLoader.load(runtimeArgument.runningMode, dqJobConfig)
-                   .fold(
-                           error            => reportConfigurationError(error, dqJobConfig),
-                           dqConfigurations => processDQConfiguration(dqConfigurations, sparkSession, dqJobConfig)
-                         )
+  private def reportErrors(error: ParsingFailure, dqJobConfig: DQJobConfig) = throw InvalidConfigurationRule (s"Please check the configuration rule structure for ${dqJobConfig.jsonFile} -> ${error.getMessage}")
+  private def loadRules(json: Json, sparkSession: SparkSession, dqJobConfig: DQJobConfig) = {
+    DQVConfigLoader.load(json.toString())
+      .fold(
+        error            => reportErrors(error, dqJobConfig),
+        dqConfigurations => processDQConfiguration(dqConfigurations, sparkSession, dqJobConfig)
+      )
   }
 
   private def processDQConfiguration(dqConfigurations: List[DQVConfiguration], sparkSession: SparkSession, dqJobConfig: DQJobConfig) = {
@@ -58,7 +66,7 @@ object DataQualityCheckApp {
     }
   }
 
-  private def reportConfigurationError(error: io.circe.Error, dqJobConfig: DQJobConfig) = {
+  private def reportErrors(error: io.circe.Error, dqJobConfig: DQJobConfig) = {
     throw InvalidConfigurationRule (s"Please check the configuration rule structure for ${dqJobConfig.jsonFile} -> ${error.getMessage}")
   }
 }
