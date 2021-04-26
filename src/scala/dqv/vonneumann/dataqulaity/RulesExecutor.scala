@@ -1,6 +1,7 @@
 package dqv.vonneumann.dataqulaity
 
-import dqv.vonneumann.dataqulaity.config.{DQVConfiguration, DQJobConfig}
+import dqv.vonneumann.dataqulaity.config.{DQJobConfig, DQVConfiguration}
+import dqv.vonneumann.dataqulaity.enums.ReportType
 import dqv.vonneumann.dataqulaity.metric.Metric.metricGenerator
 import dqv.vonneumann.dataqulaity.sql.RuleExecutor.executeSQLRule
 import dqv.vonneumann.dataqulaity.sql.SQLGenerator.generateSQLRule
@@ -15,9 +16,9 @@ object RulesExecutor {
         val ruleType =  rule._1._1.asInstanceOf[String]
         val ruleValue    =  rule._1._2.asInstanceOf[String]
         val description  =  rule._2.asInstanceOf[String]
-        val sourceType   =  dqConfiguration.sourceType
+        val sourceType   =  dqConfiguration.sourceType.toString
         val sourcePath   =  dqConfiguration.sourcePath
-        val reportType   =  dqConfiguration.reportType
+        val reportType   =  dqConfiguration.reportType.toString
         val sinkType     =  dqConfiguration.sinkType
         val sql          =  generateSQLRule(ruleType, ruleValue, sourceType, sourcePath, dqConfiguration)
         lazy val df = executeSQLRule(sql, sparkSession, sourceType, sourcePath)
@@ -29,7 +30,7 @@ object RulesExecutor {
 
 
   private def extractExecutionResult(value: Any, reportType: String, ruleType: String) = {
-    if(reportType == "percentage" && ruleType != "StatisticsRule"){
+    if(reportType == ReportType.Percentage.toString && ruleType != "StatisticsRule"){
       val inPercent = value.asInstanceOf[Double] * 100
       val formatToTwoDigits = BigDecimal(inPercent).setScale(2, BigDecimal.RoundingMode.HALF_UP).toDouble
       formatToTwoDigits + "%"

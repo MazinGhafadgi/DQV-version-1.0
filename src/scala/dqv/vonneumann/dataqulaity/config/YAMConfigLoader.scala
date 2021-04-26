@@ -1,7 +1,7 @@
 package dqv.vonneumann.dataqulaity.config
 
 import com.google.cloud.storage.{BlobId, StorageOptions}
-import io.circe.{parser, yaml}
+import io.circe.yaml
 
 import java.io.FileReader
 

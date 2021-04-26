@@ -1,5 +1,7 @@
 package dqv.vonneumann.dataqulaity.metric
 
+import dqv.vonneumann.dataqulaity.enums.SinkType
+import dqv.vonneumann.dataqulaity.enums.SinkType.SinkType
 import org.slf4j.LoggerFactory
 import io.circe.syntax._
 import org.joda.time.DateTime
@@ -14,7 +16,7 @@ object Metric {
                       sourceType: String,
                       sourcePath: String,
                       description: String,
-                      sinkType: String) = {
+                      sinkType: SinkType) = {
     val metricMap = Map("Metric-id"     -> ruleName,
       "Rule"          -> ruleValue,
       "MetricResult"  -> result,
@@ -23,8 +25,8 @@ object Metric {
       "Description"   -> description,
       "SubmissionDateTime" -> new DateTime().toString("yyyy-MM-dd HH:mm:ss"))
     sinkType match {
-      case STACKDRIVER => println(metricMap.asJson.spaces4)
-      case CONSOLE =>  Console.out.println(Console.GREEN_B + ruleName + Console.RESET )
+      case SinkType.BigQuery => throw new RuntimeException("Unsupported at the moment")
+      case SinkType.Console  =>  Console.out.println(Console.GREEN_B + ruleName + Console.RESET )
                        println(metricMap.asJson.spaces4)
                        println(" \n")
       case _           => throw new RuntimeException(s"unsupported sinkType '$sinkType' only $STACKDRIVER sinkType is supported for the time being")

@@ -1,9 +1,9 @@
 ---
 #Sample Telco CSV file
 - description: Running DQV VON NEUMANN Data Quality Check On Telco Data
-  process.type: BATCH
-  sink.type: console
-  report.type: percentage
+  process.type: Batch
+  sink.type: Console
+  report.type: Percentage
   source:
     source.type: CSV
     source.path: src/main/resources/telco/telco-sample-customer-chum.csv
@@ -32,9 +32,9 @@
 
 #Sample parquet file
 - description: Running DQV VON NEUMANN Data Quality Check On Sample Parquet file
-  process.type: BATCH
-  sink.type: console
-  report.type: count
+  process.type: Batch
+  sink.type: Console
+  report.type: Count
   source:
     source.type: Parquet
     source.path: src/main/resources/sample/

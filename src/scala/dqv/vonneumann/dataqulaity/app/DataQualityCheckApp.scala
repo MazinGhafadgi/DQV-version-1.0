@@ -38,22 +38,23 @@ object DataQualityCheckApp {
 
   private def processDQConfiguration(dqConfigurations: List[DQVConfiguration], sparkSession: SparkSession, dqJobConfig: DQJobConfig) = {
     dqConfigurations.foreach { dqConfiguration => {
-      dqConfiguration.sourceType match {
+      val sourceTypeAsString = dqConfiguration.sourceType.toString
+      sourceTypeAsString match {
 
         case "Parquet" =>         sparkSession.
                                   read.
                                   parquet(dqConfiguration.sourcePath).
-                                  createOrReplaceTempView(dqConfiguration.sourceType)
+                                  createOrReplaceTempView(sourceTypeAsString)
                                   execute(dqConfiguration, sparkSession, dqJobConfig)
 
         case "CSV" =>             sparkSession.
                                   read.
                                   option("header", "true").
                                   option("inferSchema", "true").csv(dqConfiguration.sourcePath).
-                                  createOrReplaceTempView(dqConfiguration.sourceType)
+                                  createOrReplaceTempView(sourceTypeAsString)
                                   execute(dqConfiguration, sparkSession, dqJobConfig)
 
-        case "GCPBigQuery" =>
+        case "BigQuery" =>
                                   execute(dqConfiguration, sparkSession, dqJobConfig)
 
 

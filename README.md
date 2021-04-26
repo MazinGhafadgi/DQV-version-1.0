@@ -30,10 +30,13 @@ sbt "runMain dqv.vonneumann.dataqulaity.app.DataQualityCheckApp runMain dqv.vonn
 sbt
 runMain dqv.vonneumann.dataqulaity.app.DataQualityCheckApp -b data-quality-acoe -j qaulityRules.json -r profile -m local -c RSVDATE -f yyyy/MM/dd -s 2018/04/29 -e 2020/01/08
 
-# tools to convert from json to YML 
+# tools to convert from json to YML.
 # https://www.json2yaml.com/
 
-## buidling the Jar file
+# YAML library.
+# https://github.com/circe/circe-yaml
+
+## building the Jar file
 sbt clean assembly
 
 ## submit spark Job.
