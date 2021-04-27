@@ -1,5 +1,7 @@
 ---
-#Sample Telco CSV file
+#######################################
+# DQV VON NEUMANN Data Quality Check #
+#######################################
 - description: Running DQV VON NEUMANN Data Quality Check On Telco Data
   process.type: Batch
   sink.type: Console

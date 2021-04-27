@@ -2,7 +2,7 @@ package dqv.vonneumann.dataqulaity.config
 
 import org.joda.time.format.DateTimeFormat
 
-case class DQJobConfig(bucket: String = "", jsonFile: String = "", reportType: String = "", runningMode: String = "",
+case class DQJobConfig(bucket: String = "", yamlPath: String = "", runningMode: String = "",
                        column: String = "", format: String = "", startDate: String = "", endDate: String = "")
 
 
@@ -16,8 +16,7 @@ object DQJobConfig {
   def apply(args: Array[String]): DQJobConfig = {
     val parser = new scopt.OptionParser[DQJobConfig]("JobConfig") {
       opt[String]('b', "bucket").required().valueName("value is required").action((x, c) => c.copy(bucket = x)).text("Setting bucket is required")
-      opt[String]('j', "jsonFile").required().valueName("value is required").action((x, c) => c.copy(jsonFile = x)).text("Setting jsonFile is required")
-      opt[String]('r', "reportType").required().valueName("value is required").action((x, c) => c.copy(reportType = x)).text("Setting reportType is required")
+      opt[String]('y', "yml").required().valueName("value is required").action((x, c) => c.copy(yamlPath = x)).text("Setting yamlPath is required")
       opt[String]('m', "mode").required().valueName("value is required").action((x, c) => c.copy(runningMode = x)).text("Setting mode is required")
       opt[String]('c', "column").required().valueName("value is required").action((x, c) => c.copy(column = x)).text("Setting column is required")
       opt[String]('f', "format").required().valueName("value is required").action((x, c) => c.copy(format = x)).text("Setting format is required")
@@ -31,7 +30,7 @@ object DQJobConfig {
   = {
     val targetBigQueryFormat = "yyyy-MM-dd"
     if(!validateClusterMode(config)) throw new RuntimeException("--mode value must be either local or cluster")
-    if(!isJSONFile(config)) throw new RuntimeException("--jsonFile filename must be .json extension")
+    if(!isYMAL(config)) throw new RuntimeException("--yamlPath filename must be .yml extension")
     val compareTwoDate = startDateMustBeLessThanEndDate(config)
     if(compareTwoDate == 0 || compareTwoDate > 0) throw new RuntimeException("startDate must be before endDate")
     val formatter = DateTimeFormat.forPattern(config.format)
@@ -40,7 +39,7 @@ object DQJobConfig {
   }
 
   private def validateClusterMode(config: DQJobConfig) = config.runningMode == "cluster" || config.runningMode == "local"
-  private def isJSONFile(config: DQJobConfig) = config.jsonFile.endsWith(".json")
+  private def isYMAL(config: DQJobConfig) = config.yamlPath.endsWith(".yml")
   private def startDateMustBeLessThanEndDate(config: DQJobConfig) = {
     val formatter = DateTimeFormat.forPattern(config.format)
     formatter.parseDateTime(config.startDate).compareTo(formatter.parseDateTime(config.endDate))
@@ -50,7 +49,7 @@ object DQJobConfig {
 
 
   def main(args: Array[String]): Unit = {
-    val inputArgs = Array[String]("--bucket", "data-quality-acoe", "--jsonFile", "qaulityRules.json", "--mode", "local", "--column", "ABC", "--format", "dd/MM/yyyy",  "--startDate", "12/12/2020", "--endDate", "11/11/2021")
+    val inputArgs = Array[String]("--bucket", "data-quality-acoe", "--yml", "qaulityRules.yml", "--mode", "local", "--column", "ABC", "--format", "dd/MM/yyyy",  "--startDate", "12/12/2020", "--endDate", "11/11/2021")
     val config = DQJobConfig(inputArgs)
     println(config)
   }

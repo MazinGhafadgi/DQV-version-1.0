@@ -11,7 +11,7 @@ object YAMConfigLoader {
     if(runningInCluster == "cluster") {
       import java.nio.charset.StandardCharsets.UTF_8
       val storage = StorageOptions.getDefaultInstance().getService()
-      val blobId = BlobId.of(dqJobConfig.bucket, dqJobConfig.jsonFile)
+      val blobId = BlobId.of(dqJobConfig.bucket, dqJobConfig.yamlPath)
       val content = storage.readAllBytes(blobId)
       val contentString = new String(content, UTF_8)
       yaml.parser.parse(contentString)

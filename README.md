@@ -20,15 +20,14 @@ Efficient processing should be engineered. Invocation of this efficient processi
 ## then run
 
 
--b data-quality-acoe -j qaulityRules.json -r profile -m local -c RSVDATE -f yyyy/MM/dd -s 2018/04/29 -e 2020/01/08
--b data-quality-acoe -j assertion.json -m local -c RSVDATE -f yyyy/MM/dd -s 2018/04/29 -e 2020/01/08
+-b data-quality-acoe -y config.yml -m local -c RSVDATE -f yyyy/MM/dd -s 2018/04/29 -e 2020/01/08
 
 
-sbt "runMain dqv.vonneumann.dataqulaity.app.DataQualityCheckApp runMain dqv.vonneumann.dataqulaity.app.DataQualityCheckApp -b data-quality-acoe -j qaulityRules.json -r profile -m local -c RSVDATE -f yyyy/MM/dd -s 2018/04/29 -e 2020/01/08"
+sbt "runMain dqv.vonneumann.dataqulaity.app.DataQualityCheckApp runMain dqv.vonneumann.dataqulaity.app.DataQualityCheckApp -b data-quality-acoe -y config.yml -m local -c RSVDATE -f yyyy/MM/dd -s 2018/04/29 -e 2020/01/08"
 
 ##  Or
 sbt
-runMain dqv.vonneumann.dataqulaity.app.DataQualityCheckApp -b data-quality-acoe -j qaulityRules.json -r profile -m local -c RSVDATE -f yyyy/MM/dd -s 2018/04/29 -e 2020/01/08
+runMain dqv.vonneumann.dataqulaity.app.DataQualityCheckApp -b data-quality-acoe -y config.yml -m local -c RSVDATE -f yyyy/MM/dd -s 2018/04/29 -e 2020/01/08
 
 # tools to convert from json to YML.
 # https://www.json2yaml.com/

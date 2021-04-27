@@ -17,17 +17,15 @@ object DataQualityCheckApp {
 
   def main(args: Array[String]): Unit = {
     val dqJobConfig= DQJobConfig(args)
-    println(dqJobConfig)
-    val typeOfReport =    DataQualityProcessType.withName(dqJobConfig.reportType)
-    val runtimeArgument = RuntimeArgument(dqJobConfig.runningMode, typeOfReport)
-    val sparkSession =    createSparkSession(runtimeArgument.runningMode)
+    val runningMode = dqJobConfig.runningMode
+    val sparkSession =    createSparkSession(runningMode)
     //load yaml and convert it to json structure
-    YAMConfigLoader.toJson(runtimeArgument.runningMode, dqJobConfig)
+    YAMConfigLoader.toJson(runningMode, dqJobConfig)
                    .fold(error => reportErrors(error, dqJobConfig),
                          json  => loadRules(json, sparkSession, dqJobConfig))
   }
 
-  private def reportErrors(error: ParsingFailure, dqJobConfig: DQJobConfig) = throw InvalidConfigurationRule (s"Please check the configuration rule structure for ${dqJobConfig.jsonFile} -> ${error.getMessage}")
+  private def reportErrors(error: ParsingFailure, dqJobConfig: DQJobConfig) = throw InvalidConfigurationRule (s"Please check the configuration rule structure for ${dqJobConfig.yamlPath} -> ${error.getMessage}")
   private def loadRules(json: Json, sparkSession: SparkSession, dqJobConfig: DQJobConfig) = {
     DQVConfigLoader.load(json.toString())
       .fold(
@@ -68,6 +66,6 @@ object DataQualityCheckApp {
   }
 
   private def reportErrors(error: io.circe.Error, dqJobConfig: DQJobConfig) = {
-    throw InvalidConfigurationRule (s"Please check the configuration rule structure for ${dqJobConfig.jsonFile} -> ${error.getMessage}")
+    throw InvalidConfigurationRule (s"Please check the configuration rule structure for ${dqJobConfig.yamlPath} -> ${error.getMessage}")
   }
 }
