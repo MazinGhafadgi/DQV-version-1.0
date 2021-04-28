@@ -1,6 +1,7 @@
 {
   "$schema": "http://vonneumann.com/schemas/myschema.json#",
   "type": "array",
+  "uniqueItems": true,
   "items": {
     "$ref": "#/definitions/Welcome5Element"
   },
@@ -26,6 +27,7 @@
         },
         "rules": {
           "type": "array",
+          "uniqueItems": true,
           "items": {
             "$ref": "#/definitions/RuleElement"
           }
