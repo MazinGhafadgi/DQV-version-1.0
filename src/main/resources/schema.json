@@ -1,5 +1,5 @@
 {
-  "$schema": "http://json-schema.org/draft-06/schema#",
+  "$schema": "http://vonneumann.com/schemas/myschema.json#",
   "type": "array",
   "items": {
     "$ref": "#/definitions/Welcome5Element"
@@ -10,13 +10,16 @@
       "additionalProperties": false,
       "properties": {
         "process.type": {
-          "type": "string"
+          "type": "string",
+          "enum": ["Batch", "Streaming"]
         },
         "sink.type": {
-          "type": "string"
+          "type": "string",
+          "enum": ["Console", "BigQuery"]
         },
         "report.type": {
-          "type": "string"
+          "type": "string",
+          "enum": ["Percentage", "Count"]
         },
         "source": {
           "$ref": "#/definitions/Source"
@@ -76,10 +79,13 @@
       "additionalProperties": false,
       "properties": {
         "source.type": {
-          "type": "string"
+          "type": "string",
+          "default" : "CSV",
+          "enum": ["CSV", "Parquet", "BigQuery"]
         },
         "source.path": {
-          "type": "string"
+          "type": "string",
+          "default": "projectId.dataset.tableName"
         }
       },
       "required": [
