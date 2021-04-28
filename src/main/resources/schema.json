@@ -1,0 +1,92 @@
+{
+  "$schema": "http://json-schema.org/draft-06/schema#",
+  "type": "array",
+  "items": {
+    "$ref": "#/definitions/Welcome5Element"
+  },
+  "definitions": {
+    "Welcome5Element": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "process.type": {
+          "type": "string"
+        },
+        "sink.type": {
+          "type": "string"
+        },
+        "report.type": {
+          "type": "string"
+        },
+        "source": {
+          "$ref": "#/definitions/Source"
+        },
+        "rules": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/RuleElement"
+          }
+        }
+      },
+      "required": [
+        "process.type",
+        "report.type",
+        "rules",
+        "sink.type",
+        "source"
+      ],
+      "title": "Welcome5Element"
+    },
+    "RuleElement": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "rule": {
+          "$ref": "#/definitions/RuleRule"
+        }
+      },
+      "required": [
+        "rule"
+      ],
+      "title": "RuleElement"
+    },
+    "RuleRule": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "type": "string"
+        },
+        "value": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "description",
+        "type",
+        "value"
+      ],
+      "title": "RuleRule"
+    },
+    "Source": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "source.type": {
+          "type": "string"
+        },
+        "source.path": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "source.path",
+        "source.type"
+      ],
+      "title": "Source"
+    }
+  }
+}

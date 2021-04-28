@@ -1,9 +1,8 @@
 ---
-#######################################
-# DQV VON NEUMANN Data Quality Check #
-#######################################
-- description: Running DQV VON NEUMANN Data Quality Check On Telco Data
-  process.type: Batch
+##############################################################################
+#                DQV VON NEUMANN Data Quality Checks                         #
+##############################################################################
+- process.type: Batch
   sink.type: Console
   report.type: Percentage
   source:
@@ -33,8 +32,7 @@
         description: Percentage of missing customerID
 
 #Sample parquet file
-- description: Running DQV VON NEUMANN Data Quality Check On Sample Parquet file
-  process.type: Batch
+- process.type: Batch
   sink.type: Console
   report.type: Count
   source:

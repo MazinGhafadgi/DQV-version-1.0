@@ -11,19 +11,19 @@ import dqv.vonneumann.dataqulaity.enums.ProcessType.ProcessType
 import dqv.vonneumann.dataqulaity.enums.SinkType.SinkType
 case class Check(ruleName: List[String], ruleValue: List[String], descriptions: List[String])
 
-case class DQVConfiguration(description:      String,
+case class DQVConfiguration(
                             processType:      ProcessType,
                             sinkType:         SinkType,
                             reportType:       ReportType,
                             sourceType:       SourceType,
                             sourcePath:       String,
-                            rules: List[((String, String), String)])
+                            rules: List[((String, String), String)]
+                           )
 
 object DQVConfigLoader {
   implicit val decoder: Decoder[DQVConfiguration] = new Decoder[DQVConfiguration] {
     override def apply(hCursor: HCursor): Result[DQVConfiguration] =
       for {
-        description             <- hCursor.downField("description").as[String]
         processType             <- hCursor.downField("process.type").as[String]
         sinkType                <- hCursor.downField("sink.type").as[String]
         reportType              <- hCursor.downField("report.type").as[String]
@@ -34,13 +34,14 @@ object DQVConfigLoader {
         ruleValues              <- Traverse[List].traverse(ruleList)(orderItemsJson => {orderItemsJson.hcursor.downField("rule").downField("value").as[String]})
         ruleDescription         <- Traverse[List].traverse(ruleList)(orderItemsJson => {orderItemsJson.hcursor.downField("rule").downField("description").as[String]})
       } yield {
-        DQVConfiguration(description,
-                    ProcessType.withNameOpt(processType),
-                    SinkType.withNameOpt(sinkType),
-                    ReportType.withNameOpt(reportType),
-                    SourceType.withNameOpt(sourceType),
-                    sourcePath,
-                    rulesNames.zip(ruleValues).zip(ruleDescription))
+        DQVConfiguration(
+                          ProcessType.withNameOpt(processType),
+                          SinkType.withNameOpt(sinkType),
+                          ReportType.withNameOpt(reportType),
+                          SourceType.withNameOpt(sourceType),
+                          sourcePath,
+                          rulesNames.zip(ruleValues).zip(ruleDescription)
+                        )
       }
   }
 
