@@ -19,7 +19,7 @@
         value: MIN(MonthlyCharges)
         description: Maximum monthly changes
     - rule:
-        type: InRangeRules
+        type:  CategoricalRangeRule
         value: PaymentMethod IN('Electronic check', 'Mailed check', 'Credit card (automatic)','Bank transfer (automatic)')
         description: Count of PaymentMethod
     - rule:
@@ -30,6 +30,11 @@
         type: ProportionMissingInPercentage
         value: customerID
         description: Percentage of missing customerID
+    - rule:
+        type:  NegativeNumbersRule
+        value: MonthlyCharges < 0
+        description: MonthlyCharges column should have no negative values
+
 
 #Sample parquet file
 - process.type: Batch
