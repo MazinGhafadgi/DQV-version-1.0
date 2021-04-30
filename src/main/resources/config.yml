@@ -8,6 +8,10 @@
   source:
     source.type: CSV
     source.path: src/main/resources/telco/telco-sample-customer-chum.csv
+  target:
+    target.type: CSV
+    target.path: src/main/resources/telco/target-telco-sample-customer-chum.csv
+
   #Telco Data quality rules
   rules:
     - rule:

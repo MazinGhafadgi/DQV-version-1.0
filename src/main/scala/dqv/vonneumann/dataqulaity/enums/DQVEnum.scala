@@ -12,6 +12,12 @@ object SourceType extends Enumeration {
   def withNameOpt(st: String): Value = values.find(_.toString == st).getOrElse(throw new RuntimeException(s"Incorrect Type $st, supported SourceType (CSV, Parquet, BigQuery)"))
 }
 
+object TargetType extends Enumeration {
+  type TargetType = Value
+  val CSV, Parquet, BigQuery, Null = Value
+  def withNameOpt(st: String): Value = values.find(_.toString == st).getOrElse(throw new RuntimeException(s"Incorrect Type $st, supported TargetType (CSV, Parquet, BigQuery)"))
+}
+
 object ProcessType extends Enumeration {
   type ProcessType = Value
   val Batch, Streaming = Value

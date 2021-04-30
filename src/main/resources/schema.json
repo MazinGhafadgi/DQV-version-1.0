@@ -25,6 +25,9 @@
         "source": {
           "$ref": "#/definitions/Source"
         },
+        "target": {
+          "$ref": "#/definitions/Target"
+        },
         "rules": {
           "type": "array",
           "uniqueItems": true,
@@ -113,6 +116,35 @@
         "source.type"
       ],
       "title": "Source"
+    },
+    "Target": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "target.type": {
+          "type": "string",
+          "default" : "CSV",
+          "enum": ["CSV", "Parquet", "BigQuery"]
+        },
+        "target.path": {
+          "type": "string",
+          "default": "projectId.dataset.tableName"
+        }
+      },
+      "if": {
+        "properties": { "target.type": { "enum": ["CSV", "Parquet"] } }
+      },
+      "then": {
+        "properties": { "target.path": { "pattern": "^gs://" } }
+      },
+      "else": {
+        "properties": { "target.path": { "pattern": "[a-zA-Z0–9-_.]+\\.[a-zA-Z0–9-]+\\.[a-zA-Z0–9-]" } }
+      },
+      "required": [
+        "target.path",
+        "target.type"
+      ],
+      "title": "Target"
     }
   }
 }
