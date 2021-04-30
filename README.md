@@ -47,3 +47,6 @@ sbt clean assembly
         --jars gs://data-quality-acoe/Data-quality-tool-1.0.jar \
         --properties="spark.submit.deployMode=cluster" \
         -- --bucket data-quality-acoe --jsonFile profile.json --mode cluster --column RSVDATE --format yyyy/MM/dd --startDate 2018/04/29 --endDate 2020/01/08
+
+## link to bigquery connector 
+https://github.com/GoogleCloudDataproc/spark-bigquery-connector

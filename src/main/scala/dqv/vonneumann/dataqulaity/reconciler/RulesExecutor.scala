@@ -1,4 +1,4 @@
-package dqv.vonneumann.dataqulaity
+package dqv.vonneumann.dataqulaity.reconciler
 
 import dqv.vonneumann.dataqulaity.config.{DQJobConfig, DQVConfiguration}
 import dqv.vonneumann.dataqulaity.enums.ReportType

@@ -8,7 +8,8 @@ val circeVersion = "0.12.3"
 
 
 libraryDependencies += "org.apache.spark" % "spark-sql_2.12" % "3.1.1"
-libraryDependencies += "org.scalatest" %% "scalatest" % "3.0.1" % "test"
+libraryDependencies += "org.scalactic" %% "scalactic" % "3.2.7"
+libraryDependencies += "org.scalatest" %% "scalatest" % "3.2.7" % "test"
 libraryDependencies += "com.typesafe" % "config" % "1.4.1"
 libraryDependencies += "com.google.cloud.spark" %% "spark-bigquery-with-dependencies" % "0.19.1"
 libraryDependencies += "com.google.cloud" % "google-cloud-storage" % "1.113.13"

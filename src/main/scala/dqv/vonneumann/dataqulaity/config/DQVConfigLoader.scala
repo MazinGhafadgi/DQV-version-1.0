@@ -1,14 +1,14 @@
 package dqv.vonneumann.dataqulaity.config
 
 import cats.Traverse
+import cats.implicits._
+import dqv.vonneumann.dataqulaity.enums.ProcessType.ProcessType
+import dqv.vonneumann.dataqulaity.enums.{ProcessType, ReportType, SinkType, SourceType}
+import dqv.vonneumann.dataqulaity.enums.ReportType.ReportType
+import dqv.vonneumann.dataqulaity.enums.SinkType.SinkType
+import dqv.vonneumann.dataqulaity.enums.SourceType.SourceType
 import io.circe.Decoder.Result
 import io.circe.{Decoder, HCursor, Json, parser}
-import cats.implicits._
-import dqv.vonneumann.dataqulaity.enums.{ProcessType, ReportType, SourceType, SinkType}
-import dqv.vonneumann.dataqulaity.enums.ReportType.ReportType
-import dqv.vonneumann.dataqulaity.enums.SourceType.SourceType
-import dqv.vonneumann.dataqulaity.enums.ProcessType.ProcessType
-import dqv.vonneumann.dataqulaity.enums.SinkType.SinkType
 case class Check(ruleName: List[String], ruleValue: List[String], descriptions: List[String])
 
 case class DQVConfiguration(

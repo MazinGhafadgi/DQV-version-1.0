@@ -1,8 +1,8 @@
 package dqv.vonneumann.dataqulaity.app
 
-import dqv.vonneumann.dataqulaity.InvalidConfigurationRule
 import dqv.vonneumann.dataqulaity.config.{DQJobConfig, DQVConfigLoader, DQVConfiguration, YAMConfigLoader}
-import dqv.vonneumann.dataqulaity.RulesExecutor.execute
+import dqv.vonneumann.dataqulaity.reconciler.InvalidConfigurationRule
+import dqv.vonneumann.dataqulaity.reconciler.RulesExecutor.execute
 import dqv.vonneumann.dataqulaity.sparksession.SparkSessionFactory.createSparkSession
 import io.circe.{Json, ParsingFailure}
 import org.apache.spark.sql.SparkSession

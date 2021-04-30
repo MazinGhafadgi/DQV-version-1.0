@@ -1,4 +1,4 @@
-package dqv.vonneumann.dataqulaity
+package dqv.vonneumann.dataqulaity.reconciler
 
 object DataQualityProcessType extends Enumeration {
   type DataQualityProcessType = Value
