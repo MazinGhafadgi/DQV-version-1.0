@@ -52,20 +52,16 @@ object ConfigurationContextFactory {
 
       for {
         processType <- newCursor.downField("process.type").as[String]
-        sinkType <- newCursor.downField("sink.type").as[String]
+        sinkType   <- newCursor.downField("sink.type").as[String]
         reportType <- newCursor.downField("report.type").as[String]
         sourceType <- newCursor.downField("source").downField("source.type").as[String]
         sourcePath <- newCursor.downField("source").downField("source.path").as[String]
         targetType <- newCursor.downField("target").downField("target.type").as[String]
         targetPath <- newCursor.downField("target").downField("target.path").as[String]
-        ruleList <- newCursor.downField("rules").as[List[Json]]
+        ruleList   <- newCursor.downField("rules").as[List[Json]]
         rulesNames <- Traverse[List].traverse(ruleList)(itemJson => itemJson.hcursor.downField("rule").downField("type").as[String])
-        ruleValues <- Traverse[List].traverse(ruleList)(orderItemsJson => {
-          orderItemsJson.hcursor.downField("rule").downField("value").as[String]
-        })
-        ruleDescription <- Traverse[List].traverse(ruleList)(orderItemsJson => {
-          orderItemsJson.hcursor.downField("rule").downField("description").as[String]
-        })
+        ruleValues <- Traverse[List].traverse(ruleList)(orderItemsJson => {orderItemsJson.hcursor.downField("rule").downField("value").as[String]})
+        ruleDescription <- Traverse[List].traverse(ruleList)(orderItemsJson => {orderItemsJson.hcursor.downField("rule").downField("description").as[String]})
       } yield {
         ConfigurationContext(
           ProcessType.withNameOpt(processType),
