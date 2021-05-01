@@ -5,7 +5,7 @@ import dqv.vonneumann.dataqulaity.util.CountUtils.percentage
 import org.apache.spark.sql.functions.{col, lit, when}
 import org.apache.spark.sql.{Column, DataFrame, Dataset, SparkSession}
 
-object Reconciler {
+object Reconcile {
 
   def reconcileDataFrames(sourceTable: DataFrame, targetTable: DataFrame, primaryKey: Seq[String],
                           spark: SparkSession):
@@ -18,7 +18,7 @@ object Reconciler {
     val targetTableWithColumnsRenamed = renameColsOnTargetTable(targetTable, primaryKey)
     val joinDataFrames = sourceTable.join(targetTableWithColumnsRenamed, primaryKey)
     val joinRecordCount = joinDataFrames.count
-    val reconciledDataFrame = reconcil(sourceTableColumnsList, joinDataFrames)
+    val reconciledDataFrame = reconcile(sourceTableColumnsList, joinDataFrames)
 
     val reconcilerModelSeq: Seq[Dataset[ReconcilerModel]] = report(sourceTableColumnsList, joinRecordCount, reconciledDataFrame)
 
@@ -27,8 +27,10 @@ object Reconciler {
     enrichReport(sourceTableCount, targetTableCount, joinRecordCount, dataSetOfReconcilerModel)
   }
 
-  private def reconcil(sourceTableColumnsList: Seq[String], joinedDataFrame: DataFrame): DataFrame = {
+  //Reconcile
+  private def reconcile(sourceTableColumnsList: Seq[String], joinedDataFrame: DataFrame): DataFrame = {
     val matchedColumn = sourceTableColumnsList.map { column => column + "_match" }
+
     val reconcilFunctions: Seq[Column] = sourceTableColumnsList.map {
       column => when(col(column) === col("target_" + column), lit(1)).otherwise(lit(0).alias(column))
     }

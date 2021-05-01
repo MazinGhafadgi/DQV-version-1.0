@@ -19,7 +19,7 @@ object RulesExecutor {
         val sourcePath   =  dqConfiguration.sourcePath
         val sinkType     =  dqConfiguration.sinkType
 
-        val df = Reconciler.reconcileDataFrames(sourceDF, targetDF, ruleValue, sparkSession)
+        val df = Reconcile.reconcileDataFrames(sourceDF, targetDF, ruleValue, sparkSession)
         metricGeneratorForReconsile(df,ruleType, ruleValue, sourceType, sourcePath, description, sinkType)
       }
     }

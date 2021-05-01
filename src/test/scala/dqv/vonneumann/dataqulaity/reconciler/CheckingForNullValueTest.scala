@@ -1,6 +1,7 @@
 package dqv.vonneumann.dataqulaity.reconciler
 
 import dqv.vonneumann.dataqulaity.sparksession.SparkSessionFactory
+import org.apache.spark.rdd.RDD
 import org.scalatest.flatspec.AnyFlatSpec
 import org.apache.spark.sql.functions.{col, lit, when}
 
@@ -34,6 +35,13 @@ class CheckingForNullValueTest extends AnyFlatSpec {
 
     println(s"MissingName  $missingNames")
     println(s"missingAge  $missingAge")
+
+    val dd = df.rdd
+    dd.foreach(p => MyDataRDD.justTest(p.name))
   }
 
   }
+
+   object MyDataRDD {
+     def justTest(name: Option[String]) = println(name.getOrElse(""))
+   }

@@ -34,7 +34,7 @@ class ReconcilerTest extends AnyFlatSpec {
 
     expectedOutput.show(false)
 
-    val rec = Reconciler.reconcileDataFrames(sourceTable, targetTable, primaryKey, spark)
+    val rec = Reconcile.reconcileDataFrames(sourceTable, targetTable, primaryKey, spark)
     rec.except(expectedOutput).count() === (0)
   }
 }
