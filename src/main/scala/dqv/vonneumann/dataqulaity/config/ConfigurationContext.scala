@@ -18,7 +18,7 @@ case class Check(ruleName: List[String], ruleValue: List[String], descriptions: 
 
 case class Company(industry: String, year: Int, name: String, public: Boolean)
 
-case class DQVConfiguration(
+case class ConfigurationContext(
                              processType: ProcessType,
                              sinkType: SinkType,
                              reportType: ReportType,
@@ -29,9 +29,9 @@ case class DQVConfiguration(
                              rules: List[((String, String), String)]
                            )
 
-object DQVConfigLoader {
-  implicit val decoder: Decoder[DQVConfiguration] = new Decoder[DQVConfiguration] {
-    override def apply(hCursor: HCursor): Result[DQVConfiguration] = {
+object ConfigurationContextFactory {
+  implicit val decoder: Decoder[ConfigurationContext] = new Decoder[ConfigurationContext] {
+    override def apply(hCursor: HCursor): Result[ConfigurationContext] = {
       val newCursor = hCursor.withFocus(json => {
         json.mapObject(jsonObject => {
           if (jsonObject.contains("target")) {
@@ -41,7 +41,7 @@ object DQVConfigLoader {
               Json.fromJsonObject(
                 JsonObject.fromMap(
                   Map("target.type" -> Json.fromString("Null"),
-                    "target.path" -> Json.fromString("Null")
+                    "target.path" -> Json.fromString("")
                   )
                 )
               )
@@ -67,7 +67,7 @@ object DQVConfigLoader {
           orderItemsJson.hcursor.downField("rule").downField("description").as[String]
         })
       } yield {
-        DQVConfiguration(
+        ConfigurationContext(
           ProcessType.withNameOpt(processType),
           SinkType.withNameOpt(sinkType),
           ReportType.withNameOpt(reportType),
@@ -81,6 +81,6 @@ object DQVConfigLoader {
     }
   }
 
-  def load(jsonContent: String): Either[io.circe.Error, List[DQVConfiguration]] = parser.decode[List[DQVConfiguration]](jsonContent)
+  def toConfigContexts(jsonContent: String): Either[io.circe.Error, List[ConfigurationContext]] = parser.decode[List[ConfigurationContext]](jsonContent)
 
 }

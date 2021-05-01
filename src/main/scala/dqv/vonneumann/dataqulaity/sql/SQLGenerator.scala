@@ -1,13 +1,13 @@
 package dqv.vonneumann.dataqulaity.sql
 
-import dqv.vonneumann.dataqulaity.config.DQVConfiguration
+import dqv.vonneumann.dataqulaity.config.ConfigurationContext
 import dqv.vonneumann.dataqulaity.enums.ReportType
 
 case class SqlAndMetric(sql: String, metric: String)
 
 object SQLGenerator {
 
-  def generateSQLRule(ruleType: String, ruleValue: String, sourceName: String, sourcePath: String, configRules: DQVConfiguration): String = {
+  def generateSQLRule(ruleType: String, ruleValue: String, sourceName: String, sourcePath: String, configRules: ConfigurationContext): String = {
    // val window = s"WHERE ${jobConfig.column} BETWEEN '${jobConfig.startDate}' AND '${jobConfig.endDate}'"
     val reportType = configRules.reportType.toString
     val target = if(sourceName == "BigQuery") sourcePath else sourceName

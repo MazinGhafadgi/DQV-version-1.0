@@ -1,8 +1,8 @@
 package dqv.vonneumann.dataqulaity.app
 
-import dqv.vonneumann.dataqulaity.config.{DQJobConfig, DQVConfigLoader, DQVConfiguration, YAMConfigLoader}
+import dqv.vonneumann.dataqulaity.config.{DQJobConfig, ConfigurationContextFactory, ConfigurationContext, YAMConfigLoader}
 import dqv.vonneumann.dataqulaity.reconciler.InvalidConfigurationRule
-import dqv.vonneumann.dataqulaity.reconciler.RulesExecutor.execute
+import dqv.vonneumann.dataqulaity.reconciler.RulesExecutor.{execute, executeReconciler}
 import dqv.vonneumann.dataqulaity.sparksession.SparkSessionFactory.createSparkSession
 import io.circe.{Json, ParsingFailure}
 import org.apache.spark.sql.SparkSession
@@ -10,7 +10,6 @@ import org.slf4j.LoggerFactory
 
 object DataQualityCheckApp {
   private val logger = LoggerFactory.getLogger(getClass)
-
 
   def main(args: Array[String]): Unit = {
     val dqJobConfig  = DQJobConfig(args)
@@ -25,39 +24,58 @@ object DataQualityCheckApp {
 
   private def reportErrors(error: ParsingFailure, dqJobConfig: DQJobConfig) = throw InvalidConfigurationRule (s"Please check the configuration rule structure for ${dqJobConfig.yamlPath} -> ${error.getMessage}")
   private def run(json: Json, sparkSession: SparkSession, dqJobConfig: DQJobConfig) = {
-    DQVConfigLoader.load(json.toString())
+    ConfigurationContextFactory.toConfigContexts(json.toString())
       .fold(
         error            => reportErrors(error, dqJobConfig),
         dqConfigurations => processDQConfiguration(dqConfigurations, sparkSession, dqJobConfig)
       )
   }
 
-  private def processDQConfiguration(dqConfigurations: List[DQVConfiguration], sparkSession: SparkSession, dqJobConfig: DQJobConfig) = {
-    dqConfigurations.foreach { dqConfiguration => {
-      val sourceTypeAsString = dqConfiguration.sourceType.toString
-      sourceTypeAsString match {
+  private def processDQConfiguration(configurationContexts: List[ConfigurationContext], sparkSession: SparkSession, dqJobConfig: DQJobConfig) = {
+    configurationContexts.foreach { configurationContext => {
+      val sourceTypeAsString = configurationContext.sourceType.toString
+      val targetTypeAsString = configurationContext.targetType.toString
 
-        case "Parquet" =>         sparkSession.
-                                  read.
-                                  parquet(dqConfiguration.sourcePath).
-                                  createOrReplaceTempView(sourceTypeAsString)
-                                  execute(dqConfiguration, sparkSession, dqJobConfig)
+      //Reconsile path
+      if (targetTypeAsString != "Null") {
+        val sourceDF = sparkSession.
+          read.
+          option("header", "true").
+          option("inferSchema", "true").csv(configurationContext.sourcePath)
 
-        case "CSV" =>             sparkSession.
-                                  read.
-                                  option("header", "true").
-                                  option("inferSchema", "true").csv(dqConfiguration.sourcePath).
-                                  createOrReplaceTempView(sourceTypeAsString)
-                                  execute(dqConfiguration, sparkSession, dqJobConfig)
+        val targetDF = sparkSession.
+          read.
+          option("header", "true").
+          option("inferSchema", "true").csv(configurationContext.targetPath)
+        executeReconciler(configurationContext, sparkSession, sourceDF, targetDF)
+      }
 
-        case "BigQuery" =>
-                                  execute(dqConfiguration, sparkSession, dqJobConfig)
+      // Normal Path
+      else {
+        sourceTypeAsString match {
+
+          case "Parquet" => sparkSession.
+            read.
+            parquet(configurationContext.sourcePath).
+            createOrReplaceTempView(sourceTypeAsString)
+            execute(configurationContext, sparkSession, dqJobConfig)
+
+          case "CSV" => sparkSession.
+            read.
+            option("header", "true").
+            option("inferSchema", "true").csv(configurationContext.sourcePath).
+            createOrReplaceTempView(sourceTypeAsString)
+            execute(configurationContext, sparkSession, dqJobConfig)
+
+          case "BigQuery" =>
+            execute(configurationContext, sparkSession, dqJobConfig)
 
 
-        case "AWSRedshift" =>        throw new UnsupportedOperationException("***** Connector not plugged for RedShift *****")
+          case "AWSRedshift" => throw new UnsupportedOperationException("***** Connector not plugged for RedShift *****")
 
-        //Microsoft azure synapse
-        case "AzureSynapse" =>    throw new UnsupportedOperationException("**** Connector not plugged for CosmosDB ****")
+          //Microsoft azure synapse
+          case "AzureSynapse" => throw new UnsupportedOperationException("**** Connector not plugged for CosmosDB ****")
+        }
       }
     }
     }
