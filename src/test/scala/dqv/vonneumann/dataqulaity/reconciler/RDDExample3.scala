@@ -44,17 +44,20 @@ object RDDExample3 extends App {
 object FilterDFRow {
   def filterWithTargetColumn(row: Row, metaData: List[MetaData]): Either[Row, Row] = {
 
-   val expectedValue:List[String] =  metaData.map {
+   val expectedValue:List[Boolean] =  metaData.map {
       m => m.typeColumn match {
-        case "string" => if (row.getAs(m.columnName).asInstanceOf[String] == m.expectedValue) "Passed"
-                             else s"${m.columnName} [value ${row.getAs(m.columnName)} not supported],"
+        case "string" => if (row.getAs(m.columnName).asInstanceOf[String] == m.expectedValue) true
+                             else false
 
-        case "int"    => if(row.getAs(m.columnName).asInstanceOf[Int] > m.expectedValue.toInt) "Passed" else
-                             s"${m.columnName} [value ${row.getAs(m.columnName)} too low],"
-        case _ =>        s"${m.columnName} type is not supported"
+        case "int"    => if(row.getAs(m.columnName).asInstanceOf[Int] > m.expectedValue.toInt) true else
+                             false
+        case _ =>        false
       }
     }
-    if(expectedValue.contains("Passed")) Right(row) else Left(Row("reason", expectedValue.mkString))
+
+    val check: Boolean = expectedValue.reduce((x, y) => x && y)
+
+    if(check) Right(row) else Left(Row("reason",row.toString()))
   }
 }
 
