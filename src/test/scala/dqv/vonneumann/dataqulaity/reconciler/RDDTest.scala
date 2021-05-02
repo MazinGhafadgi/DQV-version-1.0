@@ -25,22 +25,25 @@ class RDDTest extends AnyFlatSpec {
     dfFromRDD2.show(false)
   }
 
-  "Create DataFrame from Case classes " should " create it " in {
-    case class Company(name: String, foundingYear: Int, numEmployees: Int)
-    val inputSeq = Seq(Company("ABC", 1998, 310), Company("XYZ", 1983, 904), Company("NOP", 2005, 83))
-    val df = spark.sparkContext.parallelize(inputSeq).toDF()
-
-    val companyDS = df.as[Company]
-    companyDS.show()
-  }
 
   "create DataFrame from text " should "Be created" in {
     val wordsDataset = spark.sparkContext.parallelize(Seq("Spark I am your father", "May the spark be with you", "Spark I am your father")).toDS()
     val groupedDataset = wordsDataset.flatMap(_.toLowerCase.split(" "))
       .filter(_ != "")
       .groupBy("value")
-    val countsDataset = groupedDataset.count()
-    countsDataset.show()
-  }
+    val columns = Seq("Text", "MoreText")
+    wordsDataset.map(x => Validate.validate(x)).filter(x => x.isLeft).toDF().show(false)
 
+    val countsDataset = groupedDataset.count()
+    //countsDataset.show()
+  }
 }
+
+ object Validate {
+   type Record = Either[String, String]
+   def validate(x: String): Record = {
+     if(x.contains("father"))
+         Right(x)
+     else Left(x)
+   }
+ }

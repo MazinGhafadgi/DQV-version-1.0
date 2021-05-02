@@ -1,0 +1,3 @@
+test this string please
+this is the second row
+Bad record should be gone.
