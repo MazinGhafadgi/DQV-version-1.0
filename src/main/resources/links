@@ -6,3 +6,6 @@ https://medium.com/analytics-vidhya/data-reconciliation-in-spark-b185c6a2952b
 
 --- Good source of creating dataframes ----
 https://docs.databricks.com/spark/latest/dataframes-datasets/introduction-to-datasets.html
+
+-- filtering and partition
+https://mungingdata.com/apache-spark/filter-where/
