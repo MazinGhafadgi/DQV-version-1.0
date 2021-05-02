@@ -4,7 +4,6 @@ import dqv.vonneumann.dataqulaity.sparksession.SparkSessionFactory
 import org.apache.spark.sql.Row
 import org.apache.spark.sql.types.{StringType, StructField, StructType}
 
-
 case class MetaData(columnName: String, expectedValue: String, typeColumn: String)
 
 object RDDExample3 extends App {
@@ -22,7 +21,7 @@ object RDDExample3 extends App {
   def filterWithTargetColumn(targetColumn: String, targetValue: Int ) = {
     dataFrame.rdd.mapPartitions {
       itr => itr.map {
-        row => FilterDFRow.filterWithTargetColumn(row, targetColumn, targetValue)
+        row => FilterDFRow.filterWithTargetColumn(row, metaData)
       }
     }
   }
@@ -34,7 +33,7 @@ object RDDExample3 extends App {
 
   val errorSchema = StructType(Array(
     StructField("Row",StringType,true),
-    StructField("error",StringType,true)
+    StructField("Error",StringType,true)
   ))
 
   sparkSession.sqlContext.createDataFrame(badRDD1, errorSchema).show(false)
@@ -43,13 +42,19 @@ object RDDExample3 extends App {
 }
 
 object FilterDFRow {
-  def filterWithTargetColumn(row: Row, column: String, expectedValue: Int): Either[Row, Row] = {
-    val colName = row.schema.map(_.name).find(e => e == column).get
-    val extractValue = row.getAs(colName).asInstanceOf[Int]
-    if(extractValue > expectedValue)
-      Left(Row(row.toString(), "Failed validation due to salary is less than 3000"))
-    else
-      Right(row)
+  def filterWithTargetColumn(row: Row, metaData: List[MetaData]): Either[Row, Row] = {
+
+   val expectedValue:List[String] =  metaData.map {
+      m => m.typeColumn match {
+        case "string" => if (row.getAs(m.columnName).asInstanceOf[String] == m.expectedValue) "Passed"
+                             else s"${m.columnName} [value ${row.getAs(m.columnName)} not supported],"
+
+        case "int"    => if(row.getAs(m.columnName).asInstanceOf[Int] > m.expectedValue.toInt) "Passed" else
+                             s"${m.columnName} [value ${row.getAs(m.columnName)} too low],"
+        case _ =>        s"${m.columnName} type is not supported"
+      }
+    }
+    if(expectedValue.contains("Passed")) Right(row) else Left(Row("reason", expectedValue.mkString))
   }
 }
 
