@@ -6,7 +6,7 @@ import dqv.vonneumann.dataqulaity.validation.MetaData
 
 object RDDExample4 extends App with SparkUtil {
 
-  val metaData = List( MetaData("gender", "Female", "string") )
+  val metaData = List( MetaData("gender", "", "string"), MetaData("customerID", "", "string") )
 
   val df = sparkSession.
     read.

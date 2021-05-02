@@ -16,31 +16,29 @@ object ValidateDataFrameRow {
   def validateDataFrame(df: DataFrame, metaData: List[MetaData]) = {
     df.rdd.mapPartitions {
       itr => itr.map {
-        row => ValidateDataFrameRow.validate(row, metaData)
+        row => validate(row, metaData)
       }
     }
   }
 
   def validate(row: Row, metaData: List[MetaData]): Either[Row, Row] = {
-
     val expectedValue:List[MetaDataResponse] =  metaData.map {
       meataData => meataData.typeColumn match {
-        case "string" => if (row.getAs(meataData.columnName).asInstanceOf[String] == meataData.expectedValue)
-          validMetaDataResponse else MetaDataResponse(false, reportErrorMessage(row, meataData))
+        case "string" if row.getAs(meataData.columnName).asInstanceOf[String] == meataData.expectedValue => validMetaDataResponse
 
-        case "int"    => if(row.getAs(meataData.columnName).asInstanceOf[Int] > meataData.expectedValue.toInt)
-          validMetaDataResponse else MetaDataResponse(false, reportErrorMessage(row, meataData))
+        case "string" if row.getAs(meataData.columnName).asInstanceOf[String] != null => validMetaDataResponse
 
-        case _ =>                MetaDataResponse(false, s"Incorrect column type ${meataData.typeColumn}")
+        case "int"   if(row.getAs(meataData.columnName).asInstanceOf[Int] > meataData.expectedValue.toInt)  =>  validMetaDataResponse
+
+        case _ =>    MetaDataResponse(isValid = false, s"Invalid value '${row.getAs(meataData.columnName).asInstanceOf[String] }' for column ${meataData.columnName}")
       }
     }
 
     val isValid = expectedValue.map(_.isValid).reduce((x,y) => x && y)
-    if(isValid) Right(row) else Left(Row("reason",expectedValue.filter(!_.isValid).map(_.message).mkString))
+    if(isValid) Right(row) else Left(Row("reason",expectedValue.filter(!_.isValid).map(_.message).mkString(",")))
   }
 
   private val validMetaDataResponse = MetaDataResponse(true, "")
   private def reportErrorMessage(row: Row, metaData: MetaData): String =
     s"In $row and column ${metaData.columnName} failed validation rule actual value ${row.getAs(metaData.columnName)}  and expected value should be  ${metaData.expectedValue}"
-
 }
