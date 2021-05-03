@@ -3,42 +3,46 @@ package dqv.vonneumann.dataqulaity.validation
 import org.apache.spark.sql.{DataFrame, Row}
 import org.apache.spark.sql.types.{StringType, StructField, StructType}
 
+import scala.util.Try
+
 case class MetaDataResponse(isValid: Boolean , message: String)
-case class MetaData(columnName: String, expectedValue: String, typeColumn: String)
+case class ColumnMetaData(columnName: String, expectedValue: String, columnType: String, opType: String)
 
 
 object ValidateDataFrameRow {
   val errorSchema = StructType(Array(
-    StructField("Row",StringType,true),
-    StructField("Error",StringType,true)
+    StructField("Row",StringType,nullable = true),
+    StructField("Error",StringType,nullable = true)
   ))
 
-  def validateDataFrame(df: DataFrame, metaData: List[MetaData]) = {
+  def validateDataFrame(df: DataFrame, metaData: List[ColumnMetaData]) = {
     df.rdd.mapPartitions {
       itr => itr.map {
-        row => validate(row, metaData)
+        row => validateColumns(row, metaData)
       }
     }
   }
 
-  def validate(row: Row, metaData: List[MetaData]): Either[Row, Row] = {
-    val expectedValue:List[MetaDataResponse] =  metaData.map {
-      meataData => meataData.typeColumn match {
-        case "string" if row.getAs(meataData.columnName).asInstanceOf[String] == meataData.expectedValue => validMetaDataResponse
-
-        case "string" if row.getAs(meataData.columnName).asInstanceOf[String] != null => validMetaDataResponse
-
-        case "int"   if(row.getAs(meataData.columnName).asInstanceOf[Int] > meataData.expectedValue.toInt)  =>  validMetaDataResponse
-
-        case _ =>    MetaDataResponse(isValid = false, s"Invalid value '${row.getAs(meataData.columnName).asInstanceOf[String] }' for column ${meataData.columnName}")
-      }
+  def validateColumns(row: Row, columnMetaData: List[ColumnMetaData]): Either[Row, Row] = {
+    val expectedValue:List[MetaDataResponse] =  columnMetaData.map {
+      metaData => isColumnValid(metaData.opType, metaData.columnType, metaData.columnName, row, metaData.expectedValue)
     }
-
     val isValid = expectedValue.map(_.isValid).reduce((x,y) => x && y)
     if(isValid) Right(row) else Left(Row("reason",expectedValue.filter(!_.isValid).map(_.message).mkString(",")))
   }
 
-  private val validMetaDataResponse = MetaDataResponse(true, "")
-  private def reportErrorMessage(row: Row, metaData: MetaData): String =
-    s"In $row and column ${metaData.columnName} failed validation rule actual value ${row.getAs(metaData.columnName)}  and expected value should be  ${metaData.expectedValue}"
+  private def isColumnValid(optType: String, colType: String, colName: String, row: Row, expectedValues: String) = {
+    (colType, optType)match {
+      case ("string", "NullCheck")    => if( row.getAs(colName).asInstanceOf[String] !=null )
+                                             validMetaDataResponse else reportMe(optType, colName, "Value must not be null")
+      case ("string","InRangeCheck")  => if( expectedValues.split(",").contains(row.getAs(colName).asInstanceOf[String]))
+                                             validMetaDataResponse else reportMe(optType, colName, s"Value must be in Range of $expectedValues")
+    }
+  }
+
+
+  private def reportMe(operationType: String, columnName: String, reason: String) = {
+    MetaDataResponse(isValid = false, s"column $columnName failed validation '$operationType' and reason $reason")
+  }
+  private val validMetaDataResponse = MetaDataResponse(isValid = true, "")
 }

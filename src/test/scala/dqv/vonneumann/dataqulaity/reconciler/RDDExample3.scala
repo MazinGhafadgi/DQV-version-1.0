@@ -1,12 +1,12 @@
 package dqv.vonneumann.dataqulaity.reconciler
 
 import dqv.vonneumann.dataqulaity.validation.ValidateDataFrameRow.{errorSchema, validateDataFrame}
-import dqv.vonneumann.dataqulaity.validation.MetaData
+import dqv.vonneumann.dataqulaity.validation.ColumnMetaData
 
 
 object RDDExample3 extends App with SparkUtil {
 
-  val metaData = List(MetaData("language", "Java", "string"), MetaData("users_count", "3000", "int"))
+  val metaData = List(ColumnMetaData("language", "Java", "string", "eq"), ColumnMetaData("users_count", "3000", "int", "eq"))
 
   import sparkSession.implicits._
 
