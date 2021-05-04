@@ -26,7 +26,7 @@ case class ConfigurationContext(
                              sourcePath: String,
                              targetType: TargetType,
                              targetPath: String,
-                             rules: List[((String, String), String)]
+                             rules: Seq[((String, String), String)]
                            )
 
 object ConfigurationContextFactory {

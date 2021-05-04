@@ -7,7 +7,7 @@ import dqv.vonneumann.dataqulaity.validation.ColumnMetaData
 object RDDExample4 extends App with SparkUtil {
 
   val metaData = List(
-    ColumnMetaData("gender", "", "string", "NullCheck"),
+    ColumnMetaData("gender", "", "any", "NullCheck"),
     ColumnMetaData("gender", "Male,Female", "string", "InRangeCheck") )
 
   val df = sparkSession.

@@ -8,13 +8,26 @@
   source:
     source.type: CSV
     source.path: src/main/resources/telco/telco-sample-customer-chum.csv
-  target:
-    target.type: CSV
-    target.path: src/main/resources/telco/target-telco-sample-customer-chum.csv
 
   #Telco Data quality rules
   rules:
     - rule:
-        type: ReconsileRule
-        value: customerID
-        description: Reconsile Source and Target
+        type: NullCheck
+        value: tenure,PhoneService,MultipleLines
+        description: Check if columns are nulls
+
+
+#Sample parquet file
+- process.type: Batch
+  sink.type: Console
+  report.type: Count
+  source:
+    source.type: Parquet
+    source.path: src/main/resources/sample/
+  # parquet Data quality rules
+  rules:
+    - rule:
+        type: NullCheck
+        value: age
+        description: Check if the gender is nill
+

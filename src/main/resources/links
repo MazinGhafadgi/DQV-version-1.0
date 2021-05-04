@@ -13,3 +13,7 @@ https://mungingdata.com/apache-spark/filter-where/
 
 -- good source for implicitly and implict in scala
 https://stackoverflow.com/questions/26143980/assign-an-operator-to-a-variable-in-scala
+
+
+-- bigquery-connector
+https://github.com/GoogleCloudDataproc/spark-bigquery-connector
