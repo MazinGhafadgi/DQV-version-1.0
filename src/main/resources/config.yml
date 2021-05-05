@@ -13,18 +13,18 @@
   rules:
     - rule:
         type: NullCheck
-        value: customerID
+        value: customerID,gender,SeniorCitizen,Partner,Dependents,tenure,PhoneService,MultipleLines,InternetService,OnlineSecurity,OnlineBackup,DeviceProtection,TechSupport,StreamingTV,StreamingMovies,Contract,PaperlessBilling,PaymentMethod,MonthlyCharges,TotalCharges,Churn
         description: Null check failures
     - rule:
         type: InRangeCheck
-        value: gender=[Male,Female];PaymentMethod=[Electronic check, Mailed check, Credit card (automatic), Bank transfer (automatic)]
+        value: gender=Male,Female;PaymentMethod=ElectronicCheck,MailedCheck,CreditCard,BankTransfer
         description: In range check failures
     - rule:
-        type: NonNegative
-        value: TotalCharges
+        type: NonNegativeCheck
+        value: TotalCharges,SeniorCitizen
         description: Negative check failures
     - rule:
-        type: Uniqueness
+        type: UniquenessCheck
         value: customerID
         description: Uniqueness check failures
 

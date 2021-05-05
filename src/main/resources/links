@@ -17,3 +17,6 @@ https://stackoverflow.com/questions/26143980/assign-an-operator-to-a-variable-in
 
 -- bigquery-connector
 https://github.com/GoogleCloudDataproc/spark-bigquery-connector
+
+-- visualize-data-studio
+https://cloud.google.com/bigquery/docs/visualize-data-studio

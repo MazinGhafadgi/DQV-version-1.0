@@ -13,13 +13,13 @@ import org.joda.time.DateTime
 
 
 
-case class RuleReport(ColumnName: String, ErrorType: String, Count: Long, Percentage: Double,
+case class RuleReport(ColumnName: String, ColumnType: String, ErrorType: String, ErrorCount: Long, Percentage: Double,
                       SourceType: String, SourcePath: String, SubmissionDateTime: String)
 
 object RulesExecutor {
 
 
-  def executeRules(dqConfiguration: ConfigurationContext, df: DataFrame, sparkSession:SparkSession) = {
+  def executeRules(dqConfiguration: ConfigurationContext, inputDf: DataFrame, sparkSession:SparkSession) = {
     import sparkSession.implicits._
     import dqConfiguration._
     dqConfiguration.rules.flatMap {
@@ -31,17 +31,20 @@ object RulesExecutor {
              val colWithFunctions: Seq[Column] = columnSeq.map {
                  column => toColFunction(column, ruleType)
              }
-             val totalRows = df.count()
-             val groupedDf = df.select(colWithFunctions: _*).groupBy().sum().toDF(columnSeq: _*)
+             val totalRows = inputDf.count()
+             val sumDf = inputDf.select(colWithFunctions: _*).groupBy().sum().toDF(columnSeq: _*)
             //report
               columnSeq.map {
                  columnName => {
-                   val submittedDateTime = new DateTime().toString("yyyy-MM-dd HH:mm:ss").toString
-                   val extractColumnValue = groupedDf.select(columnName).head.getLong(0)
-                   val missingValue = totalRows - extractColumnValue
+                   val cleanUpColumnName        = columnName.split("=").head
+                   val submittedDateTime        = new DateTime().toString("yyyy-MM-dd HH:mm:ss").toString
+                   val extractColumnValue       = sumDf.select(columnName).head.getLong(0)
+                   val columnType               = inputDf.select(cleanUpColumnName).schema.fields.map(f => f.dataType.typeName).head // get the original type
+                   val missingValue             = totalRows - extractColumnValue
                    val missingValueInPercentage = CountUtils.percentage(extractColumnValue, totalRows)
-                   val report = RuleReport(columnName.split("=").head, description, missingValue, missingValueInPercentage,
-                                           sourceType.toString, sourcePath, submittedDateTime)
+                   val report                   = RuleReport(cleanUpColumnName, columnType, description,
+                                                             missingValue, missingValueInPercentage,
+                                                             sourceType.toString, sourcePath, submittedDateTime)
                    Seq(report).toDS
                  }
             }
@@ -67,9 +70,9 @@ object RulesExecutor {
       when(col(columnValue).isInCollection(rangeList), lit(1)).otherwise(lit(0)).alias(columnValue)
     }
 
-    else if(ruleType == "NonNegative") when(col(column) >=0, lit(1)).otherwise(lit(0)).alias(column)
+    else if(ruleType == "NonNegativeCheck") when(col(column) >=0, lit(1)).otherwise(lit(0)).alias(column)
 
-    else if(ruleType == "Uniqueness") approx_count_distinct(col(column))
+    else if(ruleType == "UniquenessCheck") approx_count_distinct(col(column))
 
 
     else when(col(column).isNull, lit(1)).otherwise(lit(0)).alias(column)
