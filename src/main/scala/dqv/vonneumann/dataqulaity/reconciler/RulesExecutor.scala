@@ -19,30 +19,15 @@ case class RuleReport(ColumnName: String, ErrorType: String, Count: Long, Percen
 object RulesExecutor {
 
 
-  def executeReconciler(dqConfiguration: ConfigurationContext, sparkSession: SparkSession, sourceDF: DataFrame, targetDF: DataFrame) = {
-    dqConfiguration.rules.map {
-      rule => {
-        val ruleType     =  rule._1._1.asInstanceOf[String]
-        val ruleValue    =  Seq(rule._1._2.asInstanceOf[String])
-        val description  =  rule._2.asInstanceOf[String]
-        val sourceType   =  dqConfiguration.sourceType.toString
-        val sourcePath   =  dqConfiguration.sourcePath
-        val sinkType     =  dqConfiguration.sinkType
-
-        Reconcile.reconcileDataFrames(sourceDF, targetDF, ruleValue, sparkSession)
-      }
-    }
-  }
-
   def executeRules(dqConfiguration: ConfigurationContext, df: DataFrame, sparkSession:SparkSession) = {
     import sparkSession.implicits._
     import dqConfiguration._
     dqConfiguration.rules.flatMap {
       rule =>
-             val ruleType =      rule._1._1.asInstanceOf[String]
-             val columns    =  rule._1._2.asInstanceOf[String]
-             val description  =  rule._2.asInstanceOf[String]
-             val columnSeq = columns.split(",").toSeq
+             val ruleType     =     rule._1._1.asInstanceOf[String]
+             val columns      =     rule._1._2.asInstanceOf[String]
+             val description  =     rule._2.asInstanceOf[String]
+             val columnSeq    =     if(ruleType != "InRangeCheck")columns.split(",").toSeq else columns.split(";").toSeq
              val colWithFunctions: Seq[Column] = columnSeq.map {
                  column => toColFunction(column, ruleType)
              }
@@ -55,7 +40,7 @@ object RulesExecutor {
                    val extractColumnValue = groupedDf.select(columnName).head.getLong(0)
                    val missingValue = totalRows - extractColumnValue
                    val missingValueInPercentage = CountUtils.percentage(extractColumnValue, totalRows)
-                   val report = RuleReport(columnName, description, missingValue, missingValueInPercentage,
+                   val report = RuleReport(columnName.split("=").head, description, missingValue, missingValueInPercentage,
                                            sourceType.toString, sourcePath, submittedDateTime)
                    Seq(report).toDS
                  }
@@ -63,18 +48,28 @@ object RulesExecutor {
      }
   }
 
-  def toColFunction(column: String, ruleType: String) = {
-    val ruleTypeAndValue = ruleType.split("=")
-    if(ruleTypeAndValue.head == "NullCheck") when(col(column).isNotNull, lit(1)).otherwise(lit(0)).alias(column)
+  def executeReconciler(dqConfiguration: ConfigurationContext, sparkSession: SparkSession, sourceDF: DataFrame, targetDF: DataFrame) = {
+    dqConfiguration.rules.map {
+      rule => {
+        val ruleValue    =  Seq(rule._1._2.asInstanceOf[String])
+        Reconcile.reconcileDataFrames(sourceDF, targetDF, ruleValue, sparkSession)
+      }
+    }
+  }
 
-    else if(ruleTypeAndValue.head == "InRangeCheck")  {
-      val rangeList = ruleTypeAndValue.last.split(",")
-      when(col(column).isInCollection(rangeList), lit(1)).otherwise(lit(0)).alias(column)
+  def toColFunction(column: String, ruleType: String) = {
+    if(ruleType == "NullCheck") when(col(column).isNotNull, lit(1)).otherwise(lit(0)).alias(column)
+
+    else if(ruleType == "InRangeCheck")  {
+      val toColumnAndRanges = column.split("=")
+      val columnValue = toColumnAndRanges.head
+      val rangeList = toColumnAndRanges.last.split(",")
+      when(col(columnValue).isInCollection(rangeList), lit(1)).otherwise(lit(0)).alias(columnValue)
     }
 
-    else if(ruleTypeAndValue.head == "NonNegative") when(col(column) >=0, lit(1)).otherwise(lit(0)).alias(column)
+    else if(ruleType == "NonNegative") when(col(column) >=0, lit(1)).otherwise(lit(0)).alias(column)
 
-    else if(ruleTypeAndValue.head == "Uniqueness") approx_count_distinct(col(column))
+    else if(ruleType == "Uniqueness") approx_count_distinct(col(column))
 
 
     else when(col(column).isNull, lit(1)).otherwise(lit(0)).alias(column)

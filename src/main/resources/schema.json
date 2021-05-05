@@ -63,7 +63,8 @@
       "additionalProperties": false,
       "properties": {
         "type": {
-          "type": "string"
+          "type": "string",
+          "enum": ["NullCheck", "InRangeCheck", "NonNegative", "Uniqueness"]
         },
         "value": {
           "type": "string"
@@ -71,15 +72,6 @@
         "description": {
           "type": "string"
         }
-      },
-      "if": {
-        "properties": { "type": { "const":  "StatisticsRule"  } }
-      },
-      "then": {
-        "properties": { "value": { "pattern": "(^MIN|MAX|AVG)" } }
-      },
-      "else": {
-        "properties": { "value": { "pattern": "." } }
       },
       "required": [
         "description",
