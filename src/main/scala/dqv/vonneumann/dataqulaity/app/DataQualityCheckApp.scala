@@ -48,7 +48,8 @@ object DataQualityCheckApp {
           read.
           option("header", "true").
           option("inferSchema", "true").csv(configurationContext.targetPath)
-        executeReconciler(configurationContext, sparkSession, sourceDF, targetDF)
+
+        executeReconciler(configurationContext, sparkSession, sourceDF, targetDF).head.show(false)
       }
     }
   }
@@ -77,7 +78,7 @@ object DataQualityCheckApp {
       }
     }
     val report = resports.reduce((ds1, ds2) => ds1.union(ds2))
-    report.show(false)
+    report.show(100,false)
     //report.write.format("com.databricks.spark.csv").save("report")
     //report.write.csv("src/main/resources/report")
 

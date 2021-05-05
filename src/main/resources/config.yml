@@ -13,8 +13,20 @@
   rules:
     - rule:
         type: NullCheck
-        value: tenure,PhoneService,MultipleLines
-        description: Check if columns are nulls
+        value: customerID,gender,SeniorCitizen,Partner,Dependents,tenure,PhoneService,MultipleLines,InternetService,OnlineSecurity,OnlineBackup,DeviceProtection,TechSupport,StreamingTV,StreamingMovies,Contract,PaperlessBilling,PaymentMethod,MonthlyCharges,TotalCharges,Churn
+        description: Null check failures
+    - rule:
+        type: InRangeCheck=Male,Female
+        value: gender
+        description: In range check failures(Female|Male)
+    - rule:
+        type: NonNegative
+        value: TotalCharges
+        description: Negative check failures
+    - rule:
+        type: Uniqueness
+        value: customerID
+        description: Uniqueness check failures
 
 
 #Sample parquet file
@@ -29,5 +41,5 @@
     - rule:
         type: NullCheck
         value: age
-        description: Check if the gender is nill
+        description: Null check failures
 
