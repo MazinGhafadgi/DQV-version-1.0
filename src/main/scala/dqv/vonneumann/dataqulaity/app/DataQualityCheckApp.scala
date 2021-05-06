@@ -1,6 +1,8 @@
 package dqv.vonneumann.dataqulaity.app
 
 import dqv.vonneumann.dataqulaity.config.{ConfigurationContext, ConfigurationContextFactory, DQJobConfig, YAMConfigLoader}
+import dqv.vonneumann.dataqulaity.enums.QualityCheckType
+import dqv.vonneumann.dataqulaity.enums.QualityCheckType.QualityCheckType
 import dqv.vonneumann.dataqulaity.reconciler.InvalidConfigurationRule
 import dqv.vonneumann.dataqulaity.rules.RulesExecutor.{execute, executeReconciler}
 import dqv.vonneumann.dataqulaity.sparksession.SparkSessionFactory.createSparkSession
@@ -28,9 +30,10 @@ object DataQualityCheckApp {
       .fold(
         error            => reportErrors(error, dqJobConfig),
         dqConfigurations => {
-          if( dqConfigurations.map(_.targetType.toString).filter(x => x =="Null").nonEmpty)
-              processDQConfiguration(dqConfigurations, dqJobConfig)
-          else reconcile(dqConfigurations)
+          dqConfigurations.map(_.qualityCheckType).head match {
+            case QualityCheckType.QualityCheck => processDQConfiguration(dqConfigurations, dqJobConfig)
+            case QualityCheckType.Reconcile =>   reconcile(dqConfigurations)
+          }
         }
       )
   }

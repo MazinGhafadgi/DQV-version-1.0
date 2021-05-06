@@ -1,7 +1,7 @@
 package dqv.vonneumann.dataqulaity.rules
 
 import dqv.vonneumann.dataqulaity.config.{ConfigurationContext, DQJobConfig}
-import dqv.vonneumann.dataqulaity.enums.ReportType
+import dqv.vonneumann.dataqulaity.enums.QualityCheckType
 import dqv.vonneumann.dataqulaity.reconciler.{Reconcile, ReconcileModel}
 import dqv.vonneumann.dataqulaity.report.{MetricReport, RuleReport}
 import dqv.vonneumann.dataqulaity.sql.RuleExecutor.executeSQLRule
@@ -38,7 +38,7 @@ object RulesExecutor {
 
 
   private def extractExecutionResult(value: Any, reportType: String, ruleType: String) = {
-    if (reportType == ReportType.Percentage.toString && ruleType != "StatisticsRule") {
+    if (reportType == QualityCheckType.Reconcile.toString && ruleType != "StatisticsRule") {
       val inPercent = value.asInstanceOf[Double] * 100
       val formatToTwoDigits = BigDecimal(inPercent).setScale(2, BigDecimal.RoundingMode.HALF_UP).toDouble
       formatToTwoDigits + "%"
@@ -59,7 +59,7 @@ object RulesExecutor {
         val description = rule._2.asInstanceOf[String]
         val sourceType = dqConfiguration.sourceType.toString
         val sourcePath = dqConfiguration.sourcePath
-        val reportType = dqConfiguration.reportType.toString
+        val reportType = "Percentage" // "Count"
         val sinkType = dqConfiguration.sinkType
         val sql = generateSQLRule(ruleType, ruleValue, sourceType, sourcePath, dqConfiguration)
         lazy val df = executeSQLRule(sql, sparkSession, sourceType, sourcePath)

@@ -4,7 +4,7 @@
 ##############################################################################
 - process.type: Batch
   sink.type: Console
-  report.type: Percentage
+  quality.check.type: QualityCheck
   source:
     source.type: CSV
     source.path: src/main/resources/telco/telco-sample-customer-chum.csv
@@ -36,10 +36,12 @@
         value: msisdn
         description: MSISDN check failures
 
-#Sample parquet file
+##############################################################################
+#               Sample parquet file                                          #
+##############################################################################
 - process.type: Batch
   sink.type: Console
-  report.type: Count
+  quality.check.type: QualityCheck
   source:
     source.type: Parquet
     source.path: src/main/resources/sample/
@@ -49,4 +51,3 @@
         type: NullCheck
         value: age
         description: Null check failures
-

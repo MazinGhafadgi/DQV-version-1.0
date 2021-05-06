@@ -3,8 +3,8 @@ package dqv.vonneumann.dataqulaity.config
 import cats.Traverse
 import cats.implicits._
 import dqv.vonneumann.dataqulaity.enums.ProcessType.ProcessType
-import dqv.vonneumann.dataqulaity.enums.{ProcessType, ReportType, SinkType, SourceType, TargetType}
-import dqv.vonneumann.dataqulaity.enums.ReportType.ReportType
+import dqv.vonneumann.dataqulaity.enums.QualityCheckType.QualityCheckType
+import dqv.vonneumann.dataqulaity.enums.{ProcessType, QualityCheckType, SinkType, SourceType, TargetType}
 import dqv.vonneumann.dataqulaity.enums.SinkType.SinkType
 import dqv.vonneumann.dataqulaity.enums.SourceType.SourceType
 import dqv.vonneumann.dataqulaity.enums.TargetType.TargetType
@@ -21,7 +21,7 @@ case class Company(industry: String, year: Int, name: String, public: Boolean)
 case class ConfigurationContext(
                              processType: ProcessType,
                              sinkType: SinkType,
-                             reportType: ReportType,
+                             qualityCheckType: QualityCheckType,
                              sourceType: SourceType,
                              sourcePath: String,
                              targetType: TargetType,
@@ -53,7 +53,7 @@ object ConfigurationContextFactory {
       for {
         processType <- newCursor.downField("process.type").as[String]
         sinkType   <- newCursor.downField("sink.type").as[String]
-        reportType <- newCursor.downField("report.type").as[String]
+        qualityCheckType   <- newCursor.downField("quality.check.type").as[String]
         sourceType <- newCursor.downField("source").downField("source.type").as[String]
         sourcePath <- newCursor.downField("source").downField("source.path").as[String]
         targetType <- newCursor.downField("target").downField("target.type").as[String]
@@ -66,7 +66,7 @@ object ConfigurationContextFactory {
         ConfigurationContext(
           ProcessType.withNameOpt(processType),
           SinkType.withNameOpt(sinkType),
-          ReportType.withNameOpt(reportType),
+          QualityCheckType.withNameOpt(qualityCheckType),
           SourceType.withNameOpt(sourceType),
           sourcePath,
           TargetType.withNameOpt(targetType),

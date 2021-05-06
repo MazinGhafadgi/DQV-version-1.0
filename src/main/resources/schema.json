@@ -18,9 +18,9 @@
           "type": "string",
           "enum": ["Console", "BigQuery"]
         },
-        "report.type": {
+        "quality.check.type": {
           "type": "string",
-          "enum": ["Percentage", "Count"]
+          "enum": ["Reconcile", "QualityCheck"]
         },
         "source": {
           "$ref": "#/definitions/Source"
@@ -36,13 +36,34 @@
           }
         }
       },
-      "required": [
-        "process.type",
-        "report.type",
-        "rules",
-        "sink.type",
-        "source"
-      ],
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "quality.check.type": {
+                "const": "Reconcile"
+              }
+            }
+          },
+          "then" : {
+          "required": [
+            "process.type",
+            "rules",
+            "sink.type",
+            "source",
+            "target"
+          ]
+          },
+          "else": {
+            "required": [
+              "process.type",
+              "rules",
+              "sink.type",
+              "quality.check.type",
+              "source"
+            ]
+          }
+        }],
       "title": "Welcome5Element"
     },
     "RuleElement": {

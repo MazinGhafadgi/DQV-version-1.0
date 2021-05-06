@@ -1,8 +1,8 @@
 package dqv.vonneumann.dataqulaity.enums
 
-object ReportType extends Enumeration {
-    type ReportType = Value
-    val Percentage, Count = Value
+object QualityCheckType extends Enumeration {
+    type QualityCheckType = Value
+    val Reconcile, QualityCheck = Value
     def withNameOpt(s: String): Value = values.find(_.toString == s).getOrElse(throw new RuntimeException(s"Incorrect Type $s, supported ReportType (Percentage, Count)"))
   }
 
@@ -32,7 +32,7 @@ object SinkType extends Enumeration {
 
   object MainApp {
   def main(args: Array[String]): Unit = {
-    println( ReportType.withNameOpt("XYZ").toString)
+    println( QualityCheckType.withNameOpt("XYZ").toString)
   }
 
 }
