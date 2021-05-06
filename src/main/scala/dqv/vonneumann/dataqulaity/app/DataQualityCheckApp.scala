@@ -14,29 +14,28 @@ object DataQualityCheckApp {
   def main(args: Array[String]): Unit = {
     val dqJobConfig  = DQJobConfig(args)
     val runningMode  = dqJobConfig.runningMode
-    val sparkSession = createSparkSession(runningMode)
+    implicit val sparkSession: SparkSession = createSparkSession(runningMode)
     //load yaml and convert it to json structure
     YAMConfigLoader.toJson(runningMode, dqJobConfig)
                    .fold( error => reportErrors(error, dqJobConfig),
-                          json  => run(json, sparkSession, dqJobConfig)
+                          json  => run(json, dqJobConfig)
                         )
   }
 
   private def reportErrors(error: ParsingFailure, dqJobConfig: DQJobConfig) = throw InvalidConfigurationRule (s"Please check the configuration rule structure for ${dqJobConfig.yamlPath} -> ${error.getMessage}")
-  private def run(json: Json, sparkSession: SparkSession, dqJobConfig: DQJobConfig) = {
+  private def run(json: Json, dqJobConfig: DQJobConfig)(implicit sparkSession: SparkSession) = {
     ConfigurationContextFactory.toConfigContexts(json.toString())
       .fold(
         error            => reportErrors(error, dqJobConfig),
         dqConfigurations => {
           if( dqConfigurations.map(_.targetType.toString).filter(x => x =="Null").nonEmpty)
-              processDQConfiguration(dqConfigurations, sparkSession, dqJobConfig)
-          else reconcile(dqConfigurations, sparkSession, dqJobConfig)
-
+              processDQConfiguration(dqConfigurations, dqJobConfig)
+          else reconcile(dqConfigurations)
         }
       )
   }
 
-  private def reconcile(configurationContexts: List[ConfigurationContext], sparkSession: SparkSession, dqJobConfig: DQJobConfig) = {
+  private def reconcile(configurationContexts: List[ConfigurationContext])(implicit sparkSession: SparkSession) = {
     configurationContexts.foreach {
       configurationContext => {
         val sourceDF = sparkSession.
@@ -54,7 +53,7 @@ object DataQualityCheckApp {
     }
   }
 
-  private def processDQConfiguration(configurationContexts: List[ConfigurationContext], sparkSession: SparkSession, dqJobConfig: DQJobConfig) = {
+  private def processDQConfiguration(configurationContexts: List[ConfigurationContext], dqJobConfig: DQJobConfig)(implicit sparkSession: SparkSession) = {
   val resports =  configurationContexts.map {
       configurationContext => {
       val sourceTypeAsString = configurationContext.sourceType.toString
@@ -62,17 +61,17 @@ object DataQualityCheckApp {
 
           case "Parquet" =>
             val df = sparkSession.read.parquet(configurationContext.sourcePath)
-            val result =  executeRules(configurationContext, df, sparkSession)
+            val result =  executeRules(configurationContext, df)
             result.reduce((df1, df2) => df1.union(df2))
 
           case "CSV" =>
             val df = sparkSession.read.option("header", "true").option("inferSchema", "true").csv(configurationContext.sourcePath)
-            val result =  executeRules(configurationContext, df, sparkSession)
+            val result =  executeRules(configurationContext, df)
             result.reduce((df1, df2) => df1.union(df2))
 
           case "BigQuery" =>
             val df = sparkSession.read.format("bigquery").load(configurationContext.sourcePath)
-            val result =  executeRules(configurationContext, df, sparkSession)
+            val result =  executeRules(configurationContext, df)
             result.reduce((df1, df2) => df1.union(df2))
         }
       }

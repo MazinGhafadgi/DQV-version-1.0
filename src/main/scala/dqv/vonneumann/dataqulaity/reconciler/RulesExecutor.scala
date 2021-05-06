@@ -2,50 +2,29 @@ package dqv.vonneumann.dataqulaity.reconciler
 
 import dqv.vonneumann.dataqulaity.config.{ConfigurationContext, DQJobConfig}
 import dqv.vonneumann.dataqulaity.enums.ReportType
-import dqv.vonneumann.dataqulaity.metric.Metric.{metricGenerator, metricGeneratorForReconsile}
+import dqv.vonneumann.dataqulaity.metric.Metric.metricGenerator
+import dqv.vonneumann.dataqulaity.report.{MetricReport, RuleReport}
+import dqv.vonneumann.dataqulaity.rules.RuleChecks
 import dqv.vonneumann.dataqulaity.sql.RuleExecutor.executeSQLRule
 import dqv.vonneumann.dataqulaity.sql.SQLGenerator.generateSQLRule
-import dqv.vonneumann.dataqulaity.util.CountUtils
-import dqv.vonneumann.dataqulaity.validation.ColumnMetaData
-import org.apache.spark.sql.{Column, DataFrame, SparkSession}
-import org.apache.spark.sql.functions.{approx_count_distinct, col, lit, not, when}
-import org.joda.time.DateTime
+import org.apache.spark.sql.{DataFrame, Dataset, SparkSession}
 
-
-
-case class RuleReport(ColumnName: String, ColumnType: String, ErrorType: String, ErrorCount: Long, Percentage: Double,
-                      SourceType: String, SourcePath: String, SubmissionDateTime: String)
 
 object RulesExecutor {
-
-
-  def executeRules(dqConfiguration: ConfigurationContext, inputDf: DataFrame, sparkSession:SparkSession) = {
-    import sparkSession.implicits._
+  def executeRules(dqConfiguration: ConfigurationContext, inputDf: DataFrame)(implicit sparkSession:SparkSession): Seq[Dataset[RuleReport]] = {
     import dqConfiguration._
     dqConfiguration.rules.flatMap {
       rule =>
              val ruleType     =     rule._1._1.asInstanceOf[String]
              val columns      =     rule._1._2.asInstanceOf[String]
              val description  =     rule._2.asInstanceOf[String]
-             val columnSeq    =     if(ruleType != "InRangeCheck")columns.split(",").toSeq else columns.split(";").toSeq
-             val colWithFunctions: Seq[Column] = columnSeq.map {
-                 column => toColFunction(column, ruleType)
-             }
-             val totalRows = inputDf.count()
-             val sumDf = inputDf.select(colWithFunctions: _*).groupBy().sum().toDF(columnSeq: _*)
+             val (columnNames, columnFunctions) =  RuleChecks.toColumnNamesAndFunctions(columns, ruleType)
+             val computedDf = inputDf.select(columnFunctions: _*).groupBy().sum().toDF(columnNames: _*)
+             val metricReport = MetricReport(inputDf, computedDf)
             //report
-              columnSeq.map {
+                columnNames.map {
                  columnName => {
-                   val cleanUpColumnName        = columnName.split("=").head
-                   val submittedDateTime        = new DateTime().toString("yyyy-MM-dd HH:mm:ss").toString
-                   val extractColumnValue       = sumDf.select(columnName).head.getLong(0)
-                   val columnType               = inputDf.select(cleanUpColumnName).schema.fields.map(f => f.dataType.typeName).head // get the original type
-                   val missingValue             = totalRows - extractColumnValue
-                   val missingValueInPercentage = CountUtils.percentage(extractColumnValue, totalRows)
-                   val report                   = RuleReport(cleanUpColumnName, columnType, description,
-                                                             missingValue, missingValueInPercentage,
-                                                             sourceType.toString, sourcePath, submittedDateTime)
-                   Seq(report).toDS
+                   metricReport.generateReport(columnName, sourceType.toString, sourcePath, description)
                  }
             }
      }
@@ -58,35 +37,6 @@ object RulesExecutor {
         Reconcile.reconcileDataFrames(sourceDF, targetDF, ruleValue, sparkSession)
       }
     }
-  }
-
-  def toColFunction(column: String, ruleType: String) = {
-    if(ruleType == "NullCheck") when(col(column).isNotNull, lit(1)).otherwise(lit(0)).alias(column)
-
-    else if(ruleType == "InRangeCheck")  {
-      val toColumnAndRanges = column.split("=")
-      val columnValue = toColumnAndRanges.head
-      val rangeList = toColumnAndRanges.last.split(",")
-      when(col(columnValue).isInCollection(rangeList), lit(1)).otherwise(lit(0)).alias(columnValue)
-    }
-
-    else if(ruleType == "NonNegativeCheck") when(col(column) >=0, lit(1)).otherwise(lit(0)).alias(column)
-
-    else if(ruleType == "UniquenessCheck") approx_count_distinct(col(column))
-
-
-    else when(col(column).isNull, lit(1)).otherwise(lit(0)).alias(column)
-  }
-
-
-  def selectRuleFunctions(ruleType: String, column: String) = {
-    ruleType match {
-      case "NullCheck" =>  when(col(column), lit(1)).otherwise(lit(0)).alias(column)
-    }
-  }
-
-  private def toColumnMetaData(ruleType: String, ruleValue:String) = {
-    ColumnMetaData(ruleValue, "", "any", ruleType)
   }
 
 
