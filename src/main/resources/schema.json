@@ -64,7 +64,7 @@
       "properties": {
         "type": {
           "type": "string",
-          "enum": ["NullCheck", "InRangeCheck", "NonNegativeCheck", "UniquenessCheck"]
+          "enum": ["NullCheck", "InRangeCheck", "NonNegativeCheck", "UniquenessCheck", "PositiveCheck", "EmailCheck", "MSISDNCheck"]
         },
         "value": {
           "type": "string"

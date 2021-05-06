@@ -20,3 +20,9 @@ https://github.com/GoogleCloudDataproc/spark-bigquery-connector
 
 -- visualize-data-studio
 https://cloud.google.com/bigquery/docs/visualize-data-studio
+
+-- Scala collect
+https://medium.com/@sergigp/using-scala-collect-3a9880f71e23
+
+-- CountMinSketchOnSpark
+https://github.com/viirya/CountMinSketchOnSpark

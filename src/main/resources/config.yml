@@ -13,21 +13,28 @@
   rules:
     - rule:
         type: NullCheck
-        value: customerID,gender,SeniorCitizen,Partner,Dependents,tenure,PhoneService,MultipleLines,InternetService,OnlineSecurity,OnlineBackup,DeviceProtection,TechSupport,StreamingTV,StreamingMovies,Contract,PaperlessBilling,PaymentMethod,MonthlyCharges,TotalCharges,Churn
+        value: customerID,gender,SeniorCitizen,Partner
         description: Null check failures
     - rule:
         type: InRangeCheck
         value: gender=Male,Female;PaymentMethod=ElectronicCheck,MailedCheck,CreditCard,BankTransfer
         description: In range check failures
     - rule:
-        type: NonNegativeCheck
+        type: PositiveCheck
         value: TotalCharges,SeniorCitizen
-        description: Negative check failures
+        description: positive check failures
     - rule:
         type: UniquenessCheck
         value: customerID
         description: Uniqueness check failures
-
+    - rule:
+        type: EmailCheck
+        value: EmailAddress
+        description: email address check failures
+    - rule:
+        type: MSISDNCheck
+        value: msisdn
+        description: MSISDN check failures
 
 #Sample parquet file
 - process.type: Batch
