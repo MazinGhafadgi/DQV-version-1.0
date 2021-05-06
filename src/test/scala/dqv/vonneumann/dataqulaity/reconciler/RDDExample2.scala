@@ -1,6 +1,5 @@
 package dqv.vonneumann.dataqulaity.reconciler
 
-import dqv.vonneumann.dataqulaity.model.ReconcilerModel
 import dqv.vonneumann.dataqulaity.sparksession.SparkSessionFactory
 import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.Row
@@ -12,15 +11,15 @@ object RDDExample2 extends App {
   import sparkSession.implicits._
 
   val expectedOutput = Seq(
-    ReconcilerModel("submitted_amount", 2, 0, 100.0),
-    ReconcilerModel("attending_npi", 1, 1, 50.0),
-    ReconcilerModel("rendering_npi", 2, 0, 100.0),
-    ReconcilerModel("pt_sex_e", 2, 0, 100.0),
-    ReconcilerModel("pt_female_e", 2, 0, 100.0),
-    ReconcilerModel("matching_record_count", 2, 0, 100.0),
-    ReconcilerModel("dropped_records"),
-    ReconcilerModel("new_records", 1, 0, 33.333),
-    ReconcilerModel("bad_field", 1, 0, 33.333)
+    ReconcileModel("submitted_amount", 2, 0, 100.0),
+    ReconcileModel("attending_npi", 1, 1, 50.0),
+    ReconcileModel("rendering_npi", 2, 0, 100.0),
+    ReconcileModel("pt_sex_e", 2, 0, 100.0),
+    ReconcileModel("pt_female_e", 2, 0, 100.0),
+    ReconcileModel("matching_record_count", 2, 0, 100.0),
+    ReconcileModel("dropped_records"),
+    ReconcileModel("new_records", 1, 0, 33.333),
+    ReconcileModel("bad_field", 1, 0, 33.333)
   ).toDS
 
   val rdd = expectedOutput.rdd.mapPartitions(iter => {
@@ -42,7 +41,7 @@ object RDDExample2 extends App {
 }
 
 object FilterRow {
-  def filter(model: ReconcilerModel): Either[String, String] = {
+  def filter(model: ReconcileModel): Either[String, String] = {
     if(model.field_name == "bad_field") Left(model.toString) else Right(model.toString)
   }
 }

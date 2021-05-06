@@ -1,12 +1,11 @@
 package dqv.vonneumann.dataqulaity.reconciler
 
-import dqv.vonneumann.dataqulaity.model.ReconcilerModel
 import dqv.vonneumann.dataqulaity.sparksession.SparkSessionFactory
 import org.scalatest.flatspec.AnyFlatSpec
 
 
 class ReconcilerTest extends AnyFlatSpec {
-  val spark = SparkSessionFactory.createSparkSession("local")
+  implicit val spark = SparkSessionFactory.createSparkSession("local")
   import spark.implicits._
 
   "reconcilerDataFramesOptimized - The output of this step " should "match with other dataframe " in {
@@ -22,19 +21,19 @@ class ReconcilerTest extends AnyFlatSpec {
     val primaryKey = Seq("memb_id", "claim_id")
 
     val expectedOutput = Seq(
-      ReconcilerModel("submitted_amount", 2, 0, 100.0),
-      ReconcilerModel("attending_npi", 1, 1, 50.0),
-      ReconcilerModel("rendering_npi", 2, 0, 100.0),
-      ReconcilerModel("pt_sex_e", 2, 0, 100.0),
-      ReconcilerModel("pt_female_e", 2, 0, 100.0),
-      ReconcilerModel("matching_record_count", 2, 0, 100.0),
-      ReconcilerModel("dropped_records"),
-      ReconcilerModel("new_records", 1, 0, 33.333)
+      ReconcileModel("submitted_amount", 2, 0, 100.0),
+      ReconcileModel("attending_npi", 1, 1, 50.0),
+      ReconcileModel("rendering_npi", 2, 0, 100.0),
+      ReconcileModel("pt_sex_e", 2, 0, 100.0),
+      ReconcileModel("pt_female_e", 2, 0, 100.0),
+      ReconcileModel("matching_record_count", 2, 0, 100.0),
+      ReconcileModel("dropped_records"),
+      ReconcileModel("new_records", 1, 0, 33.333)
     ).toDS
 
     expectedOutput.show(false)
 
-    val rec = Reconcile.reconcileDataFrames(sourceTable, targetTable, primaryKey, spark)
+    val rec = Reconcile.reconcileDataFrames(sourceTable, targetTable, primaryKey)
     rec.except(expectedOutput).count() === (0)
   }
 }

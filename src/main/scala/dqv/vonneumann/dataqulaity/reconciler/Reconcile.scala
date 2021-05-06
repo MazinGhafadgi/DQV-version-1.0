@@ -1,16 +1,16 @@
 package dqv.vonneumann.dataqulaity.reconciler
 
-import dqv.vonneumann.dataqulaity.model.ReconcilerModel
 import dqv.vonneumann.dataqulaity.util.CountUtils.percentage
 import org.apache.spark.sql.functions.{col, lit, when}
 import org.apache.spark.sql.{Column, DataFrame, Dataset, SparkSession}
 
+case class ReconcileModel(field_name: String = null, matching_record_count: Long = 0, mismatch_record_count: Long = 0,
+                          matching_record_percentage: Double = 0.0)
+
 object Reconcile {
 
-  def reconcileDataFrames(sourceTable: DataFrame, targetTable: DataFrame, primaryKey: Seq[String],
-                          spark: SparkSession):
-  Dataset[ReconcilerModel] = {
-    implicit val sparkSession = spark
+  def reconcileDataFrames(sourceTable: DataFrame, targetTable: DataFrame, primaryKey: Seq[String])(implicit sparkSession:SparkSession):
+  Dataset[ReconcileModel] = {
     val sourceTableCount: Long = sourceTable.count
     val targetTableCount: Long = targetTable.count
     val sourceTableColumnsList: Seq[String] = sourceTable.columns.toSeq diff primaryKey // drop primary keys
@@ -20,9 +20,9 @@ object Reconcile {
     val joinRecordCount = joinDataFrames.count
     val reconciledDataFrame = reconcile(sourceTableColumnsList, joinDataFrames)
 
-    val reconcilerModelSeq: Seq[Dataset[ReconcilerModel]] = report(sourceTableColumnsList, joinRecordCount, reconciledDataFrame)
+    val reconcilerModelSeq: Seq[Dataset[ReconcileModel]] = report(sourceTableColumnsList, joinRecordCount, reconciledDataFrame)
 
-    val dataSetOfReconcilerModel:Dataset[ReconcilerModel] = reconcilerModelSeq.reduce((df1, df2) => df1.union(df2))
+    val dataSetOfReconcilerModel:Dataset[ReconcileModel] = reconcilerModelSeq.reduce((df1, df2) => df1.union(df2))
 
     enrichReport(sourceTableCount, targetTableCount, joinRecordCount, dataSetOfReconcilerModel)
   }
@@ -41,27 +41,27 @@ object Reconcile {
   }
 
   private def report(sourceTableColumnsList: Seq[String], joinRecordCount: Long, reconciledDataFrame: DataFrame)
-                    (implicit spark: SparkSession): Seq[Dataset[ReconcilerModel]] = {
+                    (implicit spark: SparkSession): Seq[Dataset[ReconcileModel]] = {
     import spark.implicits._
     sourceTableColumnsList.map(
       column => {
         val recordsWithSameValues: Long = reconciledDataFrame.select(col(column)).head().getLong(0)
         val recordsWithDifferentValues: Long = joinRecordCount - recordsWithSameValues
         val sameValuesPercentage: Double = percentage(recordsWithSameValues, joinRecordCount)
-        val reconcilerModel = ReconcilerModel(column, recordsWithSameValues, recordsWithDifferentValues, sameValuesPercentage)
+        val reconcilerModel = ReconcileModel(column, recordsWithSameValues, recordsWithDifferentValues, sameValuesPercentage)
         Seq(reconcilerModel).toDS
       }
     )
   }
 
-  private def enrichReport(sourceTableCount: Long, targetTableCount: Long, joinRecordCount: Long, dataSetOfReconcilerModel: Dataset[ReconcilerModel])
-                          (implicit spark: SparkSession): Dataset[ReconcilerModel] = {
+  private def enrichReport(sourceTableCount: Long, targetTableCount: Long, joinRecordCount: Long, dataSetOfReconcilerModel: Dataset[ReconcileModel])
+                          (implicit spark: SparkSession): Dataset[ReconcileModel] = {
     import spark.implicits._
     dataSetOfReconcilerModel.union(
       Seq(
-        ReconcilerModel("matching_record_count", joinRecordCount, sourceTableCount - joinRecordCount, percentage(joinRecordCount, sourceTableCount)),
-        ReconcilerModel("dropped_records", sourceTableCount - joinRecordCount, 0, percentage(sourceTableCount - joinRecordCount, sourceTableCount)),
-        ReconcilerModel("new_records", targetTableCount - joinRecordCount, 0, percentage(targetTableCount - joinRecordCount, targetTableCount))
+        ReconcileModel("matching_record_count", joinRecordCount, sourceTableCount - joinRecordCount, percentage(joinRecordCount, sourceTableCount)),
+        ReconcileModel("dropped_records", sourceTableCount - joinRecordCount, 0, percentage(sourceTableCount - joinRecordCount, sourceTableCount)),
+        ReconcileModel("new_records", targetTableCount - joinRecordCount, 0, percentage(targetTableCount - joinRecordCount, targetTableCount))
       ).toDS)
   }
 
