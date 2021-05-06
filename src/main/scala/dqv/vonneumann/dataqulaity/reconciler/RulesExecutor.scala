@@ -2,7 +2,6 @@ package dqv.vonneumann.dataqulaity.reconciler
 
 import dqv.vonneumann.dataqulaity.config.{ConfigurationContext, DQJobConfig}
 import dqv.vonneumann.dataqulaity.enums.ReportType
-import dqv.vonneumann.dataqulaity.metric.Metric.metricGenerator
 import dqv.vonneumann.dataqulaity.report.{MetricReport, RuleReport}
 import dqv.vonneumann.dataqulaity.rules.RuleChecks
 import dqv.vonneumann.dataqulaity.sql.RuleExecutor.executeSQLRule
@@ -11,7 +10,7 @@ import org.apache.spark.sql.{DataFrame, Dataset, SparkSession}
 
 
 object RulesExecutor {
-  def executeRules(dqConfiguration: ConfigurationContext, inputDf: DataFrame)(implicit sparkSession:SparkSession): Seq[Dataset[RuleReport]] = {
+  def execute(dqConfiguration: ConfigurationContext, inputDf: DataFrame)(implicit sparkSession:SparkSession): Seq[Dataset[RuleReport]] = {
     import dqConfiguration._
     dqConfiguration.rules.flatMap {
       rule =>
@@ -21,7 +20,6 @@ object RulesExecutor {
              val (columnNames, columnFunctions) =  RuleChecks.toColumnNamesAndFunctions(columns, ruleType)
              val computedDf = inputDf.select(columnFunctions: _*).groupBy().sum().toDF(columnNames: _*)
              val metricReport = MetricReport(inputDf, computedDf)
-            //report
                 columnNames.map {
                  columnName => {
                    metricReport.generateReport(columnName, sourceType.toString, sourcePath, description)
@@ -30,11 +28,11 @@ object RulesExecutor {
      }
   }
 
-  def executeReconciler(dqConfiguration: ConfigurationContext, sparkSession: SparkSession, sourceDF: DataFrame, targetDF: DataFrame) = {
+  def executeReconciler(dqConfiguration: ConfigurationContext, sourceDF: DataFrame, targetDF: DataFrame)(implicit sparkSession:SparkSession): Seq[Dataset[ReconcileModel]] = {
     dqConfiguration.rules.map {
       rule => {
         val ruleValue    =  Seq(rule._1._2.asInstanceOf[String])
-        Reconcile.reconcileDataFrames(sourceDF, targetDF, ruleValue, sparkSession)
+        Reconcile.reconcileDataFrames(sourceDF, targetDF, ruleValue)
       }
     }
   }
@@ -67,7 +65,7 @@ object RulesExecutor {
         val sql          =  generateSQLRule(ruleType, ruleValue, sourceType, sourcePath, dqConfiguration)
         lazy val df      =  executeSQLRule(sql, sparkSession, sourceType, sourcePath)
         lazy val result  =  extractExecutionResult(df.collect().head.get(0), reportType, ruleType)
-        metricGenerator(ruleType, ruleValue, result, sourceType, sourcePath, description, sinkType)
+        //metricGenerator(ruleType, ruleValue, result, sourceType, sourcePath, description, sinkType)
       }
     }
   }
