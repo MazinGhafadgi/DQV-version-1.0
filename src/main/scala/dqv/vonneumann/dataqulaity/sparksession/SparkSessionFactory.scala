@@ -14,6 +14,8 @@ object SparkSessionFactory {
       val spark: SparkSession = SparkSession.builder()
         .master("local[1]")
         .appName("DataCheck")
+        .config("spark.debug.maxToStringFields", "200")
+        .config("spark.sql.debug.maxToStringFields", "200")
         .getOrCreate()
       spark.sparkContext.setLogLevel("ERROR")
       spark

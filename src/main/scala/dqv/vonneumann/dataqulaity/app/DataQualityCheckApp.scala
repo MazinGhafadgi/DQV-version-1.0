@@ -7,7 +7,7 @@ import dqv.vonneumann.dataqulaity.reconciler.InvalidConfigurationRule
 import dqv.vonneumann.dataqulaity.rules.RulesExecutor.{execute, executeReconciler}
 import dqv.vonneumann.dataqulaity.sparksession.SparkSessionFactory.createSparkSession
 import io.circe.{Json, ParsingFailure}
-import org.apache.spark.sql.SparkSession
+import org.apache.spark.sql.{SaveMode, SparkSession}
 import org.slf4j.LoggerFactory
 
 object DataQualityCheckApp {
@@ -63,7 +63,8 @@ object DataQualityCheckApp {
     }
     val report = resports.reduce((ds1, ds2) => ds1.union(ds2))
     report.show(100,false)
-    //report.write.format("com.databricks.spark.csv").save("report")
+   // report.write.format("com.databricks.spark.csv").save("report")
+    report.write.format("bigquery").option("temporaryGcsBucket","test-dqv-check").mode(SaveMode.Append).save("dqvdataset.DQVTable")
     //report.write.csv("src/main/resources/report")
 
   }

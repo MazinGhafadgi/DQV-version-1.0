@@ -7,13 +7,13 @@
   quality.check.type: QualityCheck
   source:
     source.type: CSV
-    source.path: src/main/resources/telco/telco-sample-customer-chum.csv
+    source.path: gs://test-dqv-check/csv/telco-sample-customer-chum.csv
 
-  #Telco Data quality rules
+  #Apply data quality rules on source telco-sample-customer-chum.csv
   rules:
     - rule:
         type: NullCheck
-        value: customerID,gender,SeniorCitizen,Partner
+        value: customerID,gender,SeniorCitizen,Partner,Dependents,tenure,PhoneService,MultipleLines,InternetService,OnlineSecurity,OnlineBackup,DeviceProtection,TechSupport,StreamingTV,StreamingMovies,Contract,PaperlessBilling,PaymentMethod,MonthlyCharges,TotalCharges,Churn,EmailAddress,msisdn
         description: Null check failures
     - rule:
         type: InRangeCheck
@@ -35,19 +35,3 @@
         type: MSISDNCheck
         value: msisdn
         description: MSISDN check failures
-
-##############################################################################
-#               Sample parquet file                                          #
-##############################################################################
-- process.type: Batch
-  sink.type: Console
-  quality.check.type: QualityCheck
-  source:
-    source.type: Parquet
-    source.path: src/main/resources/sample/
-  # parquet Data quality rules
-  rules:
-    - rule:
-        type: NullCheck
-        value: age
-        description: Null check failures
