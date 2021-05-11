@@ -34,7 +34,7 @@ object RulesExecutor {
       .toDF(columnsAsString.map(c => c + "_Check") ++ inputDf.columns.toSeq: _*)
 
     resultDf.show(false)
-
+    resultDf.filter("customerID_Check == 0 or TotalCharges_Check == 0 or EmailAddress_Check == 0").show(false)
 
   }
 
