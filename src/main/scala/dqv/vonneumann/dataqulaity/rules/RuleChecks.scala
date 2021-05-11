@@ -39,6 +39,6 @@ object RuleChecks {
     val columnFunctions = columnNames.map {
       column => toColFunction(column, ruleType)
     }
-    (columnNames, columnFunctions)
+    (columnNames.map(column => s"${column}_${ruleType}"), columnFunctions)
   }
 }

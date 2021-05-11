@@ -22,7 +22,7 @@ object RulesExecutor {
     val columnsAsString:Seq[String] = result.map(x => x._1).flatten
     val columnsAsColumn: Seq[Column] = result.map(x => x._2).flatten
 
-    val checkedColumns = columnsAsString.map(c => c + "_Check")
+    val checkedColumns = columnsAsString
     val allColumnAsCol:Seq[Column] = columnsAsColumn ++ inputDf.columns.toSeq.map(c => col(c))
     val allColumnAsString: Seq[String] = checkedColumns ++ inputDf.columns.toSeq
     val conditionExpr = if(checkedColumns.size > 1 ) checkedColumns.map(column => s"$column == 1").mkString(" or ") else checkedColumns.map(column => s"$column == 1").mkString
