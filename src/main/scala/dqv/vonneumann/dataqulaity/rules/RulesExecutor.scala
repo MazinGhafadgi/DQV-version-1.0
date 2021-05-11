@@ -6,25 +6,36 @@ import dqv.vonneumann.dataqulaity.reconciler.{Reconcile, ReconcileModel}
 import dqv.vonneumann.dataqulaity.report.{MetricReport, RuleReport}
 import dqv.vonneumann.dataqulaity.sql.RuleExecutor.executeSQLRule
 import dqv.vonneumann.dataqulaity.sql.SQLGenerator.generateSQLRule
-import org.apache.spark.sql.{DataFrame, Dataset, SparkSession}
+import org.apache.spark.sql.functions.col
+import org.apache.spark.sql.{Column, DataFrame, Dataset, SparkSession}
 
 object RulesExecutor {
-  def execute(dqConfiguration: ConfigurationContext, inputDf: DataFrame)(implicit sparkSession: SparkSession): Seq[Dataset[RuleReport]] = {
+  def execute(dqConfiguration: ConfigurationContext, inputDf: DataFrame)(implicit sparkSession: SparkSession) = {
     import dqConfiguration._
-    dqConfiguration.rules.flatMap {
+    val result = dqConfiguration.rules.map {
       rule =>
         val ruleType = rule._1._1.asInstanceOf[String]
         val columns = rule._1._2.asInstanceOf[String]
-        val description = rule._2.asInstanceOf[String]
-        val (columnNames, columnFunctions) = RuleChecks.toColumnNamesAndFunctions(columns, ruleType)
-        val computedDf = inputDf.select(columnFunctions: _*).groupBy().sum().toDF(columnNames: _*)
-        val metricReport = MetricReport(inputDf, computedDf)
-        columnNames.map {
-          columnName => {
-            metricReport.generateReport(columnName, sourceType.toString, sourcePath, ruleType)
-          }
-        }
+        RuleChecks.toColumnNamesAndFunctions(columns, ruleType)
     }
+
+    val columnsAsString:Seq[String] = result.map(x => x._1).flatten
+    val columnsAsColumn: Seq[Column] = result.map(x => x._2).flatten
+
+/*
+    val excludeCheckColumns = columnsAsString
+
+    inputDf.select(columnsAsColumn ++ Seq(col("customerID"), col("TotalCharges"), col("EmailAddress"), col("Partner")): _*)
+      .toDF(columnsAsString.map(c => c + "_Check") ++ Seq("customerID", "TotalCharges", "EmailAddress", "Partner"): _*).show(false)
+*/
+
+
+   val resultDf =  inputDf.select(columnsAsColumn ++ inputDf.columns.toSeq.map(c => col(c)): _*)
+      .toDF(columnsAsString.map(c => c + "_Check") ++ inputDf.columns.toSeq: _*)
+
+    resultDf.show(false)
+
+
   }
 
   def executeReconciler(dqConfiguration: ConfigurationContext, sourceDF: DataFrame, targetDF: DataFrame)(implicit sparkSession: SparkSession): Seq[Dataset[ReconcileModel]] = {

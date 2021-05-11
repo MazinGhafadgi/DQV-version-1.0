@@ -7,31 +7,19 @@
   quality.check.type: QualityCheck
   source:
     source.type: CSV
-    source.path: gs://test-dqv-check/csv/telco-sample-customer-chum.csv
+    source.path: src/main/resources/telco/telco-sample-customer-chum.csv
 
   #Apply data quality rules on source telco-sample-customer-chum.csv
   rules:
     - rule:
         type: NullCheck
-        value: customerID,gender,SeniorCitizen,Partner,Dependents,tenure,PhoneService,MultipleLines,InternetService,OnlineSecurity,OnlineBackup,DeviceProtection,TechSupport,StreamingTV,StreamingMovies,Contract,PaperlessBilling,PaymentMethod,MonthlyCharges,TotalCharges,Churn,EmailAddress,msisdn
+        value: customerID
         description: Null check failures
     - rule:
-        type: InRangeCheck
-        value: gender=Male,Female;PaymentMethod=ElectronicCheck,MailedCheck,CreditCard,BankTransfer
-        description: In range check failures
-    - rule:
         type: PositiveCheck
-        value: TotalCharges,SeniorCitizen
+        value: TotalCharges
         description: positive check failures
-    - rule:
-        type: UniquenessCheck
-        value: customerID
-        description: Uniqueness check failures
     - rule:
         type: EmailCheck
         value: EmailAddress
         description: email address check failures
-    - rule:
-        type: MSISDNCheck
-        value: msisdn
-        description: MSISDN check failures

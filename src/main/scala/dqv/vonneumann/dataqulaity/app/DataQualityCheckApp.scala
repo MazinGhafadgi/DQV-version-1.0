@@ -47,24 +47,24 @@ object DataQualityCheckApp {
           case "Parquet" =>
             val df = sparkSession.read.parquet(configurationContext.sourcePath)
             val result =  execute(configurationContext, df)
-            result.reduce((df1, df2) => df1.union(df2))
+           // result.reduce((df1, df2) => df1.union(df2))
 
           case "CSV" =>
             val df = sparkSession.read.option("header", "true").option("inferSchema", "true").csv(configurationContext.sourcePath)
             val result =  execute(configurationContext, df)
-            result.reduce((df1, df2) => df1.union(df2))
+           // result.reduce((df1, df2) => df1.union(df2))
 
           case "BigQuery" =>
             val df = sparkSession.read.format("bigquery").load(configurationContext.sourcePath)
             val result =  execute(configurationContext, df)
-            result.reduce((df1, df2) => df1.union(df2))
+           // result.reduce((df1, df2) => df1.union(df2))
         }
       }
     }
-    val report = resports.reduce((ds1, ds2) => ds1.union(ds2))
-    report.show(100,false)
+   // val report = resports.reduce((ds1, ds2) => ds1.union(ds2))
+   // report.show(100,false)
    // report.write.format("com.databricks.spark.csv").save("report")
-    report.write.format("bigquery").option("temporaryGcsBucket","test-dqv-check").mode(SaveMode.Append).save("dqvdataset.DQVTable")
+   // report.write.format("bigquery").option("temporaryGcsBucket","test-dqv-check").mode(SaveMode.Append).save("dqvdataset.DQVTable")
     //report.write.csv("src/main/resources/report")
 
   }
