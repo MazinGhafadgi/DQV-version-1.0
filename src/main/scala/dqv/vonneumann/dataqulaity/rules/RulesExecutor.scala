@@ -22,19 +22,15 @@ object RulesExecutor {
     val columnsAsString:Seq[String] = result.map(x => x._1).flatten
     val columnsAsColumn: Seq[Column] = result.map(x => x._2).flatten
 
-/*
-    val excludeCheckColumns = columnsAsString
+    val checkedColumns = columnsAsString.map(c => c + "_Check")
+    val allColumnAsCol:Seq[Column] = columnsAsColumn ++ inputDf.columns.toSeq.map(c => col(c))
+    val allColumnAsString: Seq[String] = checkedColumns ++ inputDf.columns.toSeq
+    val conditionExpr = if(checkedColumns.size > 1 ) checkedColumns.map(column => s"$column == 1").mkString(" or ") else checkedColumns.map(column => s"$column == 1").mkString
 
-    inputDf.select(columnsAsColumn ++ Seq(col("customerID"), col("TotalCharges"), col("EmailAddress"), col("Partner")): _*)
-      .toDF(columnsAsString.map(c => c + "_Check") ++ Seq("customerID", "TotalCharges", "EmailAddress", "Partner"): _*).show(false)
-*/
-
-
-   val resultDf =  inputDf.select(columnsAsColumn ++ inputDf.columns.toSeq.map(c => col(c)): _*)
-      .toDF(columnsAsString.map(c => c + "_Check") ++ inputDf.columns.toSeq: _*)
+   val resultDf =  inputDf.select(allColumnAsCol: _*).toDF(allColumnAsString: _*)
 
     resultDf.show(false)
-    resultDf.filter("customerID_Check == 0 or TotalCharges_Check == 0 or EmailAddress_Check == 0").show(false)
+    resultDf.filter(conditionExpr).show(false)
 
   }
 

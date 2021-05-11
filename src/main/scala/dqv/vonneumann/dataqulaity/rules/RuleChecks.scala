@@ -7,8 +7,8 @@ import java.util.regex.Pattern
 
 object RuleChecks {
 
-  private val matched = lit(1)
-  private val unMatched = lit(0)
+  private val matched = lit(0)
+  private val unMatched = lit(1)
   private val nullCheck: String => Column = (column: String) => when(col(column).isNotNull, matched).otherwise(lit(unMatched)).alias(column)
   private val inRangeCheck: String => Column = (column: String) => {
     val toColumnNameAndRange = column.split("=")
