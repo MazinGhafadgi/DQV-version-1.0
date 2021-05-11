@@ -13,7 +13,7 @@
   rules:
     - rule:
         type: NullCheck
-        value: customerID
+        value: gender
         description: Null check failures
     - rule:
         type: PositiveCheck

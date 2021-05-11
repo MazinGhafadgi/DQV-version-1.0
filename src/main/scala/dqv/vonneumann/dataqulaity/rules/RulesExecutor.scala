@@ -6,7 +6,7 @@ import dqv.vonneumann.dataqulaity.reconciler.{Reconcile, ReconcileModel}
 import dqv.vonneumann.dataqulaity.report.{MetricReport, RuleReport}
 import dqv.vonneumann.dataqulaity.sql.RuleExecutor.executeSQLRule
 import dqv.vonneumann.dataqulaity.sql.SQLGenerator.generateSQLRule
-import org.apache.spark.sql.functions.col
+import org.apache.spark.sql.functions.{col, lit}
 import org.apache.spark.sql.{Column, DataFrame, Dataset, SparkSession}
 
 object RulesExecutor {
@@ -25,12 +25,27 @@ object RulesExecutor {
     val checkedColumns = columnsAsString
     val allColumnAsCol:Seq[Column] = columnsAsColumn ++ inputDf.columns.toSeq.map(c => col(c))
     val allColumnAsString: Seq[String] = checkedColumns ++ inputDf.columns.toSeq
-    val conditionExpr = if(checkedColumns.size > 1 ) checkedColumns.map(column => s"$column == 1").mkString(" or ") else checkedColumns.map(column => s"$column == 1").mkString
+    val conditionExpr = if(checkedColumns.size > 1 ) checkedColumns.map(column => s"$column == 1").mkString(" or ")
+                        else checkedColumns.map(column => s"$column == 1").mkString
 
    val resultDf =  inputDf.select(allColumnAsCol: _*).toDF(allColumnAsString: _*)
 
-    resultDf.show(false)
-    resultDf.filter(conditionExpr).show(false)
+    val filterDf = resultDf.filter(conditionExpr)
+
+    val totalErrors = Seq(
+                           col("gender_NullCheck") +
+                           col("TotalCharges_PositiveCheck") +
+                           col("EmailAddress_EmailCheck")
+                         )
+
+//df = df.withColumn('result', sum(df[col] for col in df.columns))
+    val filterDfWithMoreColumn =  filterDf.columns.toSeq.map(c => col(c)) ++ totalErrors
+
+    val filterDfWithErrorMetric = filterDf.columns.toSeq ++ Seq("ErrorCount")
+
+   val errorReport =  filterDf.select(filterDfWithMoreColumn: _*).toDF(filterDfWithErrorMetric: _*)
+    errorReport.show(false)
+   errorReport.write.format("bigquery").option("temporaryGcsBucket","test-dqv-check").save("dqvdataset.ErrorTable")
 
   }
 

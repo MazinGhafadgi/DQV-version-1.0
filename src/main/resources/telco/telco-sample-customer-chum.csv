@@ -1,8 +1,7 @@
-customerID,gender,SeniorCitizen,Partner,Dependents,tenure,PhoneService,MultipleLines,InternetService,OnlineSecurity,OnlineBackup,DeviceProtection,TechSupport,StreamingTV,StreamingMovies,Contract,PaperlessBilling,PaymentMethod,MonthlyCharges,TotalCharges,Churn,EmailAddress
-7590-VHVEG,Female,0,Yes,No,1,No,No phone service,DSL,No,Yes,No,No,No,No,Month-to-month,Yes,ElectronicCheck,29.85,29.85,No,cliffordchi@domain.com
-5575-GNVDE,Female,0,No,No,34,Yes,No,DSL,Yes,No,Yes,No,No,No,One year,No,,56.95,1889.5,No,cliffordchi@domain.com
-3668-QPYBK,Female,0,No,No,2,Yes,No,DSL,Yes,Yes,No,No,No,No,Month-to-month,Yes,,-53.85,108.15,Yes,cliffordchi@domain.com
-7795-CFOCW,Male,0,No,No,45,No,No phone service,DSL,Yes,No,Yes,Yes,No,No,One year,No,,42.3,1840.75,No,cliffordchi@domain.com
-9237-HQITU,Female,1,No,No,2,Yes,No,Fiber optic,No,No,No,No,No,No,Month-to-month,Yes,ElectronicCheck,70.7,-100,Yes,cliffordchi@domain.com
-9305-CDSKC,Male,1,No,No,8,Yes,Yes,Fiber optic,No,No,Yes,No,Yes,Yes,Month-to-month,Yes,XXXXXX,-99.65,-1,Yes,clifford-chi@domain.com
-9305-CDSKC,Male,0,No,Yes,22,Yes,Yes,Fiber optic,No,Yes,No,No,Yes,No,Month-to-month,Yes,CreditCard,89.1,1949.4,No,mazin@yahoo.com
+customerID,gender,SeniorCitizen,Partner,Dependents,tenure,PhoneService,MultipleLines,InternetService,OnlineSecurity,OnlineBackup,DeviceProtection,TechSupport,StreamingTV,StreamingMovies,Contract,PaperlessBilling,PaymentMethod,MonthlyCharges,TotalCharges,Churn,EmailAddress,msisdn
+7590-VHVEG,Female,-2,Yes,No,1,No,No phone service,DSL,No,Yes,No,No,No,No,Month-to-month,Yes,ElectronicCheck,29.85,29.85,No,cliffordchi@domain.com,8004605500
+5575-GNVDE,Female,0,No,No,34,Yes,No,DSL,Yes,No,Yes,No,No,No,One year,No,,56.95,1889.5,No,cliffordchi@domain.com,8004605500
+3668-QPYBK,Female,0,No,No,2,Yes,No,DSL,Yes,Yes,No,No,No,No,Month-to-month,Yes,,-53.85,108.15,Yes,cliffordchi@domain.com,8004605500
+7795-CFOCW,,0,No,No,45,No,No phone service,DSL,Yes,No,Yes,Yes,No,No,One year,No,,42.3,1840.75,No,cliffordchi@domain.com,8004605500
+9237-HQITU,Female,-4,No,No,2,Yes,No,Fiber optic,No,No,No,No,No,No,Month-to-month,Yes,ElectronicCheck,70.7,-100,Yes,cliffordchi@domain.com,+(123) - 456-78-90
+9305-CDSKC,,-6,No,No,8,Yes,Yes,Fiber optic,No,No,Yes,No,Yes,Yes,Month-to-month,Yes,XXXXXX,-99.65,-1,Yes,111111111,+44 7911 123456
