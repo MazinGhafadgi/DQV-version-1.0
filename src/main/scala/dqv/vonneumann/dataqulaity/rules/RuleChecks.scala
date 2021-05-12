@@ -35,10 +35,14 @@ object RuleChecks {
   private def toColFunction(column: String, ruleType: String): Column = rules(ruleType)(column)
 
   def toColumnNamesAndFunctions(columns: String, ruleType: String): (Seq[String], Seq[Column]) = {
-    val columnNames = if(ruleType != "InRangeCheck") columns.split(",").toSeq else columns.split(";").toSeq
+    //columnNames.map(c => c.split("=").head)
+    val columnNames = if(ruleType == "InRangeCheck") columns.split(";").toSeq  else columns.split(",").toSeq
     val columnFunctions = columnNames.map {
       column => toColFunction(column, ruleType)
     }
-    (columnNames.map(column => s"${column}_${ruleType}"), columnFunctions)
+    if(ruleType == "InRangeCheck")
+      (columnNames.map(c => c.split("=").head).map(column => s"${column}_${ruleType}"), columnFunctions)
+    else
+      (columnNames.map(column => s"${column}_${ruleType}"), columnFunctions)
   }
 }

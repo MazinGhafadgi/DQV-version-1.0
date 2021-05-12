@@ -1,15 +1,19 @@
 package dqv.vonneumann.dataqulaity.rules
 
 import dqv.vonneumann.dataqulaity.config.{ConfigurationContext, DQJobConfig}
-import dqv.vonneumann.dataqulaity.enums.QualityCheckType
+import dqv.vonneumann.dataqulaity.enums.{QualityCheckType, SinkType}
+import dqv.vonneumann.dataqulaity.enums.SinkType.SinkType
 import dqv.vonneumann.dataqulaity.reconciler.{Reconcile, ReconcileModel}
-import dqv.vonneumann.dataqulaity.report.{MetricReport, RuleReport}
 import dqv.vonneumann.dataqulaity.sql.RuleExecutor.executeSQLRule
 import dqv.vonneumann.dataqulaity.sql.SQLGenerator.generateSQLRule
+import dqv.vonneumann.dataqulaity.util.CountUtils
 import org.apache.spark.sql.functions.{col, lit}
-import org.apache.spark.sql.{Column, DataFrame, Dataset, SparkSession, functions}
+import org.apache.spark.sql.{Column, DataFrame, Dataset, SparkSession}
+import org.joda.time.DateTime
 
-import scala.Console.in
+import java.util.UUID
+
+case class ExecutionResult(UUID: String, SourceType: String, SourcePath: String, SubmissionDateTime: String, ErrorRows: Long, ErrorPercentage: Double)
 
 object RulesExecutor {
   def execute(dqConfiguration: ConfigurationContext, inputDf: DataFrame)(implicit sparkSession: SparkSession) = {
@@ -36,11 +40,23 @@ object RulesExecutor {
    val totalErrors =  checkedColumns.map(c => col(c)).reduce((a,b) => a + b)
     val filterDfWithMoreColumn =  filterDf.columns.toSeq.map(c => col(c)) ++ Seq(totalErrors)
 
-    val filterDfWithErrorMetric = filterDf.columns.toSeq ++ Seq("ErrorCount")
+    val filterDfWithErrorMetric = filterDf.columns.toSeq ++ Seq("ColumnErrorCount")
 
+   val UUIDValue = UUID.randomUUID().toString
    val errorReport =  filterDf.select(filterDfWithMoreColumn: _*).toDF(filterDfWithErrorMetric: _*)
-    errorReport.show(false)
-    errorReport.write.format("bigquery").option("temporaryGcsBucket","test-dqv-check").save("dqvdataset.ErrorTable")
+   val errorRowsWithPK = errorReport.withColumn("UUID", lit(UUIDValue))
+    errorRowsWithPK.show(false)
+    if(dqConfiguration.sinkType == SinkType.BigQuery )errorRowsWithPK.write.format("bigquery").option("temporaryGcsBucket","test-dqv-check").save("dqvdataset.ErrorRows")
+
+    val totalNumberOfRows = inputDf.count()
+    val errorRows = errorRowsWithPK.count()
+    val errorPercentage = CountUtils.percentage(errorRows, totalNumberOfRows)
+
+    import sparkSession.implicits._
+    val reportResultDF = Seq(ExecutionResult(UUIDValue, dqConfiguration.sourceType.toString, dqConfiguration.sourcePath, new DateTime().toString("yyyy-MM-dd HH:mm:ss"), errorRows, errorPercentage)).toDS
+    reportResultDF.show(false)
+
+    if(dqConfiguration.sinkType == SinkType.BigQuery ) reportResultDF.write.format("bigquery").option("temporaryGcsBucket","test-dqv-check").save("dqvdataset.ExecutionResult")
   }
 
   def executeReconciler(dqConfiguration: ConfigurationContext, sourceDF: DataFrame, targetDF: DataFrame)(implicit sparkSession: SparkSession): Seq[Dataset[ReconcileModel]] = {

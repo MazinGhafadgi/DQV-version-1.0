@@ -23,3 +23,11 @@
         type: EmailCheck
         value: EmailAddress
         description: email address check failures
+    - rule:
+        type: InRangeCheck
+        value: PaymentMethod=ElectronicCheck,MailedCheck,CreditCard,BankTransfer
+        description: In range check failures
+    - rule:
+        type: InRangeCheck
+        value: Partner=Yes,No
+        description: In range check failures
