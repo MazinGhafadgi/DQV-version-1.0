@@ -7,7 +7,9 @@ import dqv.vonneumann.dataqulaity.report.{MetricReport, RuleReport}
 import dqv.vonneumann.dataqulaity.sql.RuleExecutor.executeSQLRule
 import dqv.vonneumann.dataqulaity.sql.SQLGenerator.generateSQLRule
 import org.apache.spark.sql.functions.{col, lit}
-import org.apache.spark.sql.{Column, DataFrame, Dataset, SparkSession}
+import org.apache.spark.sql.{Column, DataFrame, Dataset, SparkSession, functions}
+
+import scala.Console.in
 
 object RulesExecutor {
   def execute(dqConfiguration: ConfigurationContext, inputDf: DataFrame)(implicit sparkSession: SparkSession) = {
@@ -19,10 +21,9 @@ object RulesExecutor {
         RuleChecks.toColumnNamesAndFunctions(columns, ruleType)
     }
 
-    val columnsAsString:Seq[String] = result.map(x => x._1).flatten
+    val checkedColumns:Seq[String] = result.map(x => x._1).flatten
     val columnsAsColumn: Seq[Column] = result.map(x => x._2).flatten
 
-    val checkedColumns = columnsAsString
     val allColumnAsCol:Seq[Column] = columnsAsColumn ++ inputDf.columns.toSeq.map(c => col(c))
     val allColumnAsString: Seq[String] = checkedColumns ++ inputDf.columns.toSeq
     val conditionExpr = if(checkedColumns.size > 1 ) checkedColumns.map(column => s"$column == 1").mkString(" or ")
@@ -32,21 +33,14 @@ object RulesExecutor {
 
     val filterDf = resultDf.filter(conditionExpr)
 
-    val totalErrors = Seq(
-                           col("gender_NullCheck") +
-                           col("TotalCharges_PositiveCheck") +
-                           col("EmailAddress_EmailCheck")
-                         )
-
-//df = df.withColumn('result', sum(df[col] for col in df.columns))
-    val filterDfWithMoreColumn =  filterDf.columns.toSeq.map(c => col(c)) ++ totalErrors
+   val totalErrors =  checkedColumns.map(c => col(c)).reduce((a,b) => a + b)
+    val filterDfWithMoreColumn =  filterDf.columns.toSeq.map(c => col(c)) ++ Seq(totalErrors)
 
     val filterDfWithErrorMetric = filterDf.columns.toSeq ++ Seq("ErrorCount")
 
    val errorReport =  filterDf.select(filterDfWithMoreColumn: _*).toDF(filterDfWithErrorMetric: _*)
     errorReport.show(false)
-   errorReport.write.format("bigquery").option("temporaryGcsBucket","test-dqv-check").save("dqvdataset.ErrorTable")
-
+    errorReport.write.format("bigquery").option("temporaryGcsBucket","test-dqv-check").save("dqvdataset.ErrorTable")
   }
 
   def executeReconciler(dqConfiguration: ConfigurationContext, sourceDF: DataFrame, targetDF: DataFrame)(implicit sparkSession: SparkSession): Seq[Dataset[ReconcileModel]] = {
