@@ -41,8 +41,8 @@ object RuleChecks {
       column => toColFunction(column, ruleType)
     }
     if(ruleType == "InRangeCheck")
-      (columnNames.map(c => c.split("=").head).map(column => s"${column}_${ruleType}"), columnFunctions)
+      (columnNames.map(c => c.split("=").head).map(column => s"${ruleType}_${column}"), columnFunctions)
     else
-      (columnNames.map(column => s"${column}_${ruleType}"), columnFunctions)
+      (columnNames.map(column => s"${ruleType}_${column}"), columnFunctions)
   }
 }
