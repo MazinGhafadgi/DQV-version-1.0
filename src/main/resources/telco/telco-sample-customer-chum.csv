@@ -12,7 +12,7 @@ customerID,gender,SeniorCitizen,Partner,Dependents,tenure,PhoneService,MultipleL
 5240-IJOQT,,1,xx,No,1,Yes,Yes,Fiber optic,No,No,No,No,No,No,Month-to-month,Yes,xx,74.7,-74.7,Yes,badboyEmail
 8819-WFGGJ,,0,Yes,No,68,No,No phone service,DSL,Yes,No,Yes,No,Yes,Yes,Two year,Yes,xxx,54.1,794.5,No,test@yahoo.co.uk
 7427-AUFPY,Male,0,No,No,54,Yes,No,No,No internet service,No internet service,No internet service,No internet service,No internet service,No internet service,Two year,No,ElectronicCheck,19.65,1008.7,No,test@yahoo.co.uk
-2811-POVEX,Female,1,Yes,Yes,23,Yes,No,Fiber optic,No,Yes,Yes,No,No,Yes,Month-to-month,Yes,CreditCard,88.45,2130.55,No,test@yahoo.co.uk
+2811-POVEX,,1,Yes,Yes,23,Yes,No,Fiber optic,No,Yes,Yes,No,No,Yes,Month-to-month,Yes,CreditCard,88.45,2130.55,No,test@yahoo.co.uk
 1092-GANHU,Male,0,No,No,17,Yes,No,Fiber optic,No,No,Yes,No,No,No,Month-to-month,Yes,IncorrectValue,76.65,1313.55,Yes,test@yahoo.co.uk
 7898-PDWQE,Male,0,Yes,No,71,Yes,Yes,DSL,Yes,Yes,Yes,Yes,No,Yes,Two year,No,CreditCard,80.4,5727.15,No,test@yahoo.co.uk
 9972-EWRJS,Female,0,Yes,Yes,67,Yes,No,No,No internet service,No internet service,No internet service,No internet service,No internet service,No internet service,Two year,Yes,MailedCheck,19.25,1372.9,No,test@yahoo.co.uk

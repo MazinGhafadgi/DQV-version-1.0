@@ -9,7 +9,7 @@
     source.type: CSV
     source.path: src/main/resources/telco/telco-sample-customer-chum.csv
 
-  #Apply data quality rules on source telco-sample-customer-chum.csv
+  #Apply data quality rules on target source
   rules:
     - rule:
         type: NullCheck
