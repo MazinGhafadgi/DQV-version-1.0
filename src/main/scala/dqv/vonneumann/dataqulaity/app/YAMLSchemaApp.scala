@@ -2,11 +2,8 @@ package dqv.vonneumann.dataqulaity.app
 
 import dqv.vonneumann.dataqulaity.sparksession.SparkSessionFactory
 import org.apache.spark.sql.SparkSession
-
 import java.io.{File, PrintWriter}
-
 case class YAMLSchemaConfig(sourceType: String = "", path: String = "")
-
 
 object YAMLSchemaApp extends App {
   implicit val sparkSession: SparkSession = SparkSessionFactory.createSparkSession("local")
