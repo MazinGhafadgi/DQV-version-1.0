@@ -9,25 +9,16 @@
     source.type: CSV
     source.path: src/main/resources/telco/telco-sample-customer-chum.csv
 
-  #Apply data quality rules on target source
   rules:
     - rule:
         type: NullCheck
-        value: gender
+        value: gender_STRING
         description: Null check failures
     - rule:
         type: PositiveCheck
-        value: TotalCharges
+        value: MonthlyCharges_DOUBLE
         description: positive check failures
     - rule:
         type: EmailCheck
-        value: EmailAddress
-        description: email address check failures
-    - rule:
-        type: InRangeCheck
-        value: PaymentMethod=ElectronicCheck,MailedCheck,CreditCard,BankTransfer
-        description: In range check failures
-    - rule:
-        type: InRangeCheck
-        value: Partner=Yes,No
-        description: In range check failures
+        value: EmailAddress_STRING
+        description: email check

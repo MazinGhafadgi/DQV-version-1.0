@@ -1,5 +1,6 @@
+
 {
-  "$schema": "http://vonneumann.com/schemas/myschema.json#",
+  ""schema" : "http://vonneumann.com/schemas/myschema.json#",
   "type": "array",
   "uniqueItems": true,
   "items": {
@@ -85,10 +86,11 @@
       "properties": {
         "type": {
           "type": "string",
-          "enum": ["NullCheck", "InRangeCheck", "NonNegativeCheck", "UniquenessCheck", "PositiveCheck", "EmailCheck", "MSISDNCheck"]
+          "enum": ["NullCheck", "InRangeCheck", "NonNegativeCheck", "UniquenessCheck", "PositiveCheck", "EmailCheck", "MSISDNCheck", "ReconcileRule"]
         },
         "value": {
-          "type": "string"
+          "type": "string",
+          "enum": ["customerID_STRING","gender_STRING","SeniorCitizen_STRING","Partner_STRING","Dependents_STRING","tenure_INTEGER","PhoneService_STRING","MultipleLines_STRING","InternetService_STRING","OnlineSecurity_STRING","OnlineBackup_STRING","DeviceProtection_STRING","TechSupport_STRING","StreamingTV_STRING","StreamingMovies_STRING","Contract_STRING","PaperlessBilling_STRING","PaymentMethod_STRING","MonthlyCharges_DOUBLE","TotalCharges_DOUBLE","Churn_STRING","EmailAddress_STRING"]
         },
         "description": {
           "type": "string"
@@ -108,7 +110,7 @@
         "source.type": {
           "type": "string",
           "default" : "CSV",
-          "enum": ["CSV", "Parquet", "BigQuery"]
+          "enum": ["CSV", "Parquet", "BigQuery", "OneMore4"]
         },
         "source.path": {
           "type": "string",
@@ -161,3 +163,4 @@
     }
   }
 }
+        
