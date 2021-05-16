@@ -9,8 +9,9 @@ case class ReconcileModel(field_name: String = null, matching_record_count: Long
 
 object Reconcile {
 
-  def reconcileDataFrames(sourceTable: DataFrame, targetTable: DataFrame, primaryKey: Seq[String])(implicit sparkSession:SparkSession):
+  def reconcileDataFrames(sourceTable: DataFrame, targetTable: DataFrame, pk: Seq[String])(implicit sparkSession:SparkSession):
   Dataset[ReconcileModel] = {
+    val primaryKey = pk.map(k => k.split(":").head)
     val sourceTableCount: Long = sourceTable.count
     val targetTableCount: Long = targetTable.count
     val sourceTableColumnsList: Seq[String] = sourceTable.columns.toSeq diff primaryKey // drop primary keys

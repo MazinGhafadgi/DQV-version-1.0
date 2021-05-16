@@ -60,7 +60,7 @@ object ConfigurationContextFactory {
         targetPath <- newCursor.downField("target").downField("target.path").as[String]
         ruleList   <- newCursor.downField("rules").as[List[Json]]
         rulesNames <- Traverse[List].traverse(ruleList)(itemJson => itemJson.hcursor.downField("rule").downField("type").as[String])
-        ruleValues <- Traverse[List].traverse(ruleList)(orderItemsJson => {orderItemsJson.hcursor.downField("rule").downField("value").as[String]})
+        ruleValues <- Traverse[List].traverse(ruleList)(orderItemsJson => {orderItemsJson.hcursor.downField("rule").downField("column").as[String]})
         ruleDescription <- Traverse[List].traverse(ruleList)(orderItemsJson => {orderItemsJson.hcursor.downField("rule").downField("description").as[String]})
       } yield {
         ConfigurationContext(

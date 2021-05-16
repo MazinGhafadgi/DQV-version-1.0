@@ -88,9 +88,9 @@
           "type": "string",
           "enum": ["NullCheck", "InRangeCheck", "NonNegativeCheck", "UniquenessCheck", "PositiveCheck", "EmailCheck", "MSISDNCheck", "ReconcileRule"]
         },
-        "value": {
+        "column": {
           "type": "string",
-          "enum": ["customerID_STRING","gender_STRING","SeniorCitizen_STRING","Partner_STRING","Dependents_STRING","tenure_INTEGER","PhoneService_STRING","MultipleLines_STRING","InternetService_STRING","OnlineSecurity_STRING","OnlineBackup_STRING","DeviceProtection_STRING","TechSupport_STRING","StreamingTV_STRING","StreamingMovies_STRING","Contract_STRING","PaperlessBilling_STRING","PaymentMethod_STRING","MonthlyCharges_DOUBLE","TotalCharges_DOUBLE","Churn_STRING","EmailAddress_STRING"]
+          "enum": ["customerID:STRING","gender:STRING","SeniorCitizen:STRING","Partner:STRING","Dependents:STRING","tenure:INTEGER","PhoneService:STRING","MultipleLines:STRING","InternetService:STRING","OnlineSecurity:STRING","OnlineBackup:STRING","DeviceProtection:STRING","TechSupport:STRING","StreamingTV:STRING","StreamingMovies:STRING","Contract:STRING","PaperlessBilling:STRING","PaymentMethod:STRING","MonthlyCharges:DOUBLE","TotalCharges:DOUBLE","Churn:STRING","EmailAddress:STRING"]
         },
         "description": {
           "type": "string"
@@ -99,7 +99,7 @@
       "required": [
         "description",
         "type",
-        "value"
+        "column"
       ],
       "title": "RuleRule"
     },

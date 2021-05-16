@@ -11,14 +11,10 @@
 
   rules:
     - rule:
+        type: NonNegativeCheck
+        column: TotalCharges:DOUBLE
+        description: test
+    - rule:
         type: NullCheck
-        value: gender_STRING
-        description: Null check failures
-    - rule:
-        type: PositiveCheck
-        value: MonthlyCharges_DOUBLE
-        description: positive check failures
-    - rule:
-        type: EmailCheck
-        value: EmailAddress_STRING
-        description: email check
+        column: gender:STRING
+        description: test

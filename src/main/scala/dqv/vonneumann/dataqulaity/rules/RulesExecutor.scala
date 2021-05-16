@@ -20,7 +20,7 @@ object RulesExecutor {
     val result = dqConfiguration.rules.map {
       rule =>
         val ruleType = rule._1._1.asInstanceOf[String]
-        val columns = rule._1._2.asInstanceOf[String].split("_").head
+        val columns = rule._1._2.asInstanceOf[String].split(":").head
         RuleChecks.toColumnNamesAndFunctions(columns, ruleType)
     }
 

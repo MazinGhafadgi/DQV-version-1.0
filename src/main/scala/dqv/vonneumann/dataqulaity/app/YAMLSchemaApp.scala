@@ -17,8 +17,8 @@ object YAMLSchemaApp extends App {
     val yamlSchemaConfig = parser.parse(args, YAMLSchemaConfig()).getOrElse(throw new RuntimeException("JobArgs must be initialised"))
 
      yamlSchemaConfig.sourceType match {
-      case "CSV" => sparkSession.read.option("header", "true").option("inferSchema", "true").csv(yamlSchemaConfig.path).schema.map(x => x.name + "_" + x.dataType.typeName.toUpperCase).mkString(",")
-      case "Parquet" => sparkSession.read.parquet(yamlSchemaConfig.path).schema.map(x => x.name + "_" + x.dataType.typeName.toUpperCase).mkString(",")
+      case "CSV" => sparkSession.read.option("header", "true").option("inferSchema", "true").csv(yamlSchemaConfig.path).schema.map(x => x.name + ":" + x.dataType.typeName.toUpperCase).mkString(",")
+      case "Parquet" => sparkSession.read.parquet(yamlSchemaConfig.path).schema.map(x => x.name + ":" + x.dataType.typeName.toUpperCase).mkString(",")
     }
   }
 
@@ -29,7 +29,7 @@ object YAMLSchemaApp extends App {
 
   val columns = s"""$dfColumns"""
 
-  val doubleQColumns = "[" + columns.replaceAll("([\\w-]+)", "\"$1\"") + "]"
+  val doubleQColumns = "[" + columns.replaceAll("([\\w:]+)", "\"$1\"") + "]"
 
   val inputString =
     s"""
@@ -122,7 +122,7 @@ object YAMLSchemaApp extends App {
           |          "type": "string",
           |          "enum": ["NullCheck", "InRangeCheck", "NonNegativeCheck", "UniquenessCheck", "PositiveCheck", "EmailCheck", "MSISDNCheck", "ReconcileRule"]
           |        },
-          |        "value": {
+          |        "column": {
           |          "type": "string",
           |          "enum": $doubleQColumns
           |        },
@@ -133,7 +133,7 @@ object YAMLSchemaApp extends App {
           |      "required": [
           |        "description",
           |        "type",
-          |        "value"
+          |        "column"
           |      ],
           |      "title": "RuleRule"
           |    },
