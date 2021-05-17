@@ -37,3 +37,7 @@ https://json-schema.org/understanding-json-schema/reference/conditionals.html
 -- how to add two columns
 df = df.withColumn('result', sum(df[col] for col in df.columns))
 https://stackoverflow.com/questions/53297872/how-can-i-sum-multiple-columns-in-a-spark-dataframe-in-pyspark
+
+--
+https://docs.oracle.com/en-us/iaas/data-safe/doc/sensitive-types.html
+

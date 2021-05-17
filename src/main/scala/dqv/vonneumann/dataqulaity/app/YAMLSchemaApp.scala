@@ -1,7 +1,10 @@
 package dqv.vonneumann.dataqulaity.app
 
+import dqv.vonneumann.dataqulaity.config.{ConfigurationContextFactory, DQJobConfig, YAMConfigLoader}
+import dqv.vonneumann.dataqulaity.enums.SourceType
 import dqv.vonneumann.dataqulaity.sparksession.SparkSessionFactory
 import org.apache.spark.sql.SparkSession
+
 import java.io.{File, PrintWriter}
 case class YAMLSchemaConfig(sourceType: String = "", path: String = "")
 
@@ -9,16 +12,22 @@ object YAMLSchemaApp extends App {
   implicit val sparkSession: SparkSession = SparkSessionFactory.createSparkSession("local")
 
   def apply(args: Array[String]): String = {
+
+   val json =  YAMConfigLoader.toJson("local", DQJobConfig())
+    val config = ConfigurationContextFactory.toConfigContexts(json.right.get.toString()).right.get.head
+
+/*
     val parser = new scopt.OptionParser[YAMLSchemaConfig]("JobConfig") {
       opt[String]('s', "source").required().valueName("value is required").action((x, c) => c.copy(sourceType = x)).text("source is required")
       opt[String]('p', "path").required().valueName("value is required").action((x, c) => c.copy(path = x)).text("path is required")
     }
 
     val yamlSchemaConfig = parser.parse(args, YAMLSchemaConfig()).getOrElse(throw new RuntimeException("JobArgs must be initialised"))
+*/
 
-     yamlSchemaConfig.sourceType match {
-      case "CSV" => sparkSession.read.option("header", "true").option("inferSchema", "true").csv(yamlSchemaConfig.path).schema.map(x => x.name + ":" + x.dataType.typeName.toUpperCase).mkString(",")
-      case "Parquet" => sparkSession.read.parquet(yamlSchemaConfig.path).schema.map(x => x.name + ":" + x.dataType.typeName.toUpperCase).mkString(",")
+      config.sourceType match {
+      case SourceType.CSV => sparkSession.read.option("header", "true").option("inferSchema", "true").csv(config.sourcePath).schema.map(x => x.name + ":" + x.dataType.typeName.toUpperCase).mkString(",")
+      case SourceType.Parquet => sparkSession.read.parquet(config.sourcePath).schema.map(x => x.name + ":" + x.dataType.typeName.toUpperCase).mkString(",")
     }
   }
 
