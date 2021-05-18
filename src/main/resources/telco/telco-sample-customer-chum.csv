@@ -1,8 +1,66 @@
-customerID,gender,SeniorCitizen,Partner,Dependents,tenure,PhoneService,MultipleLines,InternetService,OnlineSecurity,OnlineBackup,DeviceProtection,TechSupport,StreamingTV,StreamingMovies,Contract,PaperlessBilling,PaymentMethod,MonthlyCharges,TotalCharges,Churn
-7590-VHVEG,Female,-2,Yes,No,1,No,No phone service,DSL,No,Yes,No,No,No,No,Month-to-month,Yes,ElectronicCheck,29.85,29.85,No
-5575-GNVDE,Female,0,No,No,34,Yes,No,DSL,Yes,No,Yes,No,No,No,One year,No,MailedCheck,56.95,1889.5,No
-3668-QPYBK,Female,0,No,No,2,Yes,No,DSL,Yes,Yes,No,No,No,No,Month-to-month,Yes,MailedCheck,-53.85,108.15,Yes
-7795-CFOCW,Male,0,No,No,45,No,No phone service,DSL,Yes,No,Yes,Yes,No,No,One year,No,BankTransfer,42.3,1840.75,No
-9237-HQITU,Female,-4,No,No,2,Yes,No,Fiber optic,No,No,No,No,No,No,Month-to-month,Yes,ElectronicCheck,70.7,-100,Yes
-9305-CDSKC,XXX,-6,No,No,8,Yes,Yes,Fiber optic,No,No,Yes,No,Yes,Yes,Month-to-month,Yes,XXXXXX,-99.65,-1,Yes
-9305-CDSKC,Female,0,No,Yes,22,Yes,Yes,Fiber optic,No,Yes,No,No,Yes,No,Month-to-month,Yes,CreditCard,89.1,1949.4,No
+customerID,gender,SeniorCitizen,Partner,Dependents,tenure,PhoneService,MultipleLines,InternetService,OnlineSecurity,OnlineBackup,DeviceProtection,TechSupport,StreamingTV,StreamingMovies,Contract,PaperlessBilling,PaymentMethod,MonthlyCharges,TotalCharges,Churn,EmailAddress
+7590-VHVEG,,-2,XX,No,1,No,No phone service,DSL,No,Yes,No,No,No,No,Month-to-month,Yes,ElectronicXXXXXXCheck,-29.85,-29.85,No,cliffordchiXXXXdomain.com
+5575-GNVDE,Female,0,No,No,34,Yes,No,DSL,Yes,No,Yes,No,No,No,One year,No,ElectronicCheck,56.95,1889.5,No,cliffordchi@domain.com
+3668-QPYBK,Female,0,No,No,2,Yes,No,DSL,Yes,Yes,No,No,No,No,Month-to-month,Yes,ElectronicCheck,53.85,108.15,Yes,cliffordchi@domain.com
+7795-CFOCW,Male,0,No,No,45,No,No phone service,DSL,Yes,No,Yes,Yes,No,No,One year,No,ElectronicCheck,42.3,1840.75,No,cliffordchi@domain.com
+9237-HQITU,Female,0,No,No,2,Yes,No,Fiber optic,No,No,No,No,No,No,Month-to-month,Yes,ElectronicCheck,70.7,100,Yes,cliffordchi@domain.com
+9305-CDSKC,Male,0,No,No,8,Yes,Yes,Fiber optic,No,No,Yes,No,Yes,Yes,Month-to-month,Yes,ElectronicCheck,99.65,1,Yes,cliffordchi@domain.com
+5014-GSOUQ,Male,0,No,No,13,Yes,No,No,No internet service,No internet service,No internet service,No internet service,No internet service,No internet service,Two year,No,MailedCheck,19.95,243.65,No,test@yahoo.co.uk
+5724-BIDBU,Male,0,Yes,No,49,Yes,Yes,DSL,Yes,No,No,No,No,No,One year,Yes,ElectronicCheck,55.35,2633.95,No,test@yahoo.co.uk
+0481-SUMCB,,cc,No,No,45,Yes,Yes,Fiber optic,No,No,Yes,No,Yes,Yes,One year,Yes,XXXXXX,-102.15,-4735.35,No,test@yahoo.co.uk
+1769-GRUIK,Male,0,No,No,18,Yes,No,Fiber optic,No,No,No,No,No,No,Month-to-month,Yes,ElectronicCheck,71.1,1247.75,No,test@yahoo.co.uk
+5240-IJOQT,,1,xx,No,1,Yes,Yes,Fiber optic,No,No,No,No,No,No,Month-to-month,Yes,xx,74.7,-74.7,Yes,badboyEmail
+8819-WFGGJ,,0,Yes,No,68,No,No phone service,DSL,Yes,No,Yes,No,Yes,Yes,Two year,Yes,xxx,54.1,794.5,No,test@yahoo.co.uk
+7427-AUFPY,Male,0,No,No,54,Yes,No,No,No internet service,No internet service,No internet service,No internet service,No internet service,No internet service,Two year,No,ElectronicCheck,19.65,1008.7,No,test@yahoo.co.uk
+2811-POVEX,,1,Yes,Yes,23,Yes,No,Fiber optic,No,Yes,Yes,No,No,Yes,Month-to-month,Yes,CreditCard,88.45,2130.55,No,test@yahoo.co.uk
+1092-GANHU,Male,0,No,No,17,Yes,No,Fiber optic,No,No,Yes,No,No,No,Month-to-month,Yes,IncorrectValue,76.65,1313.55,Yes,test@yahoo.co.uk
+7898-PDWQE,Male,0,Yes,No,71,Yes,Yes,DSL,Yes,Yes,Yes,Yes,No,Yes,Two year,No,CreditCard,80.4,5727.15,No,test@yahoo.co.uk
+9972-EWRJS,Female,0,Yes,Yes,67,Yes,No,No,No internet service,No internet service,No internet service,No internet service,No internet service,No internet service,Two year,Yes,MailedCheck,19.25,1372.9,No,test@yahoo.co.uk
+9314-IJWSQ,,0,Yes,Yes,14,Yes,Yes,Fiber optic,No,No,No,No,Yes,No,Month-to-month,Yes,xxx,84.8,1203.9,No,test@yahoo.co.uk
+0661-XEYAN,,1,No,No,1,No,No phone service,DSL,No,No,No,No,No,No,Month-to-month,Yes,CreditCard,25.8,25.8,Yes,test@yahoo.co.uk
+5799-JRCZO,Female,0,No,Yes,63,Yes,No,No,No internet service,No internet service,No internet service,No internet service,No internet service,No internet service,Two year,No,MailedCheck,19.5,1215.1,No,test@yahoo.co.uk
+1921-KYSAY,Female,0,No,No,41,Yes,Yes,DSL,No,No,Yes,Yes,No,Yes,One year,Yes,ElectronicCheck,68.6,2877.05,No,test@yahoo.co.uk
+6198-RTPMF,Male,0,Yes,No,17,Yes,Yes,Fiber optic,No,No,No,No,Yes,Yes,Month-to-month,No,ElectronicCheck,92.6,1579.7,No,test@yahoo.co.uk
+3070-BDOQC,Female,0,No,No,60,Yes,No,Fiber optic,No,Yes,Yes,No,Yes,Yes,Two year,Yes,ElectronicCheck,99.65,5941.05,No,test@yahoo.co.uk
+2952-QAYZF,Male,0,No,No,5,Yes,Yes,Fiber optic,No,Yes,Yes,No,No,No,Month-to-month,Yes,ElectronicCheck,85.3,424.15,Yes,test@yahoo.co.uk
+6234-PFPXL,Male,0,Yes,No,22,Yes,Yes,Fiber optic,Yes,No,No,Yes,Yes,No,Month-to-month,No,CreditCard,95.9,2234.95,No,test@yahoo.co.uk
+9824-QCJPK,Male,0,Yes,No,36,Yes,No,No,No internet service,No internet service,No internet service,No internet service,No internet service,No internet service,One year,No,MailedCheck,20,666.75,No,test@yahoo.co.uk
+4763-PGDPO,Female,0,No,No,4,Yes,No,Fiber optic,No,No,No,No,No,No,Month-to-month,No,ElectronicCheck,70.4,281,Yes,test@yahoo.co.uk
+4283-IVYCI,Male,0,No,No,9,Yes,No,DSL,Yes,No,No,Yes,No,Yes,Month-to-month,No,CreditCard,64.95,547.8,No,test@yahoo.co.uk
+1866-OBPNR,Male,0,Yes,Yes,1,Yes,No,Fiber optic,No,Yes,No,No,No,No,Month-to-month,No,CreditCard,74.6,74.6,No,test@yahoo.co.uk
+8205-MQUGY,Male,0,Yes,Yes,12,Yes,No,DSL,Yes,No,No,No,No,No,Month-to-month,Yes,ElectronicCheck,49.2,571.15,No,test@yahoo.co.uk
+8970-ANWXO,Female,0,No,No,23,Yes,Yes,DSL,No,No,No,Yes,Yes,Yes,One year,Yes,MailedCheck,73.75,1756.6,No,test@yahoo.co.uk
+9480-BQJEI,Male,0,No,No,62,Yes,Yes,Fiber optic,Yes,Yes,No,No,No,Yes,One year,Yes,BankTransfer,92.3,5731.45,No,test@yahoo.co.uk
+5394-SVGJV,Male,0,No,No,37,Yes,Yes,Fiber optic,No,No,No,Yes,Yes,Yes,Month-to-month,No,BankTransfer,98.8,3475.55,Yes,test@yahoo.co.uk
+6979-TNDEU,Female,0,No,No,8,Yes,No,No,No internet service,No internet service,No internet service,No internet service,No internet service,No internet service,Month-to-month,No,MailedCheck,19.2,156.85,No,test@yahoo.co.uk
+9777-WJJPR,Male,0,Yes,No,31,Yes,Yes,Fiber optic,No,No,Yes,No,Yes,No,Month-to-month,No,CreditCard,88.65,2683.2,No,test@yahoo.co.uk
+9283-LZQOH,Male,0,Yes,Yes,13,Yes,Yes,Fiber optic,No,No,No,No,No,No,Month-to-month,Yes,CreditCard,74.4,896.75,Yes,test@yahoo.co.uk
+7079-QRCBC,Female,0,No,No,24,Yes,Yes,Fiber optic,No,No,Yes,No,Yes,Yes,Month-to-month,Yes,ElectronicCheck,98.75,2407.3,Yes,test@yahoo.co.uk
+9495-SKLKD,Male,0,Yes,Yes,45,Yes,Yes,Fiber optic,No,Yes,Yes,No,No,Yes,Month-to-month,Yes,CreditCard,95.95,4456.65,No,test@yahoo.co.uk
+6048-UWKAL,Female,1,Yes,No,69,Yes,Yes,Fiber optic,No,Yes,No,Yes,Yes,Yes,Two year,No,CreditCard,105.4,6998.95,No,test@yahoo.co.uk
+5067-DGXLL,Male,0,No,No,2,Yes,No,No,No internet service,No internet service,No internet service,No internet service,No internet service,No internet service,Month-to-month,No,MailedCheck,20.25,36.8,No,test@yahoo.co.uk
+5469-CTCWN,Male,0,Yes,Yes,61,Yes,Yes,Fiber optic,Yes,Yes,No,No,Yes,Yes,One year,Yes,ElectronicCheck,106,6547.7,Yes,test@yahoo.co.uk
+9851-QXEEQ,Male,0,No,No,41,Yes,Yes,Fiber optic,No,Yes,Yes,No,Yes,Yes,Month-to-month,Yes,ElectronicCheck,104.7,4346.4,Yes,test@yahoo.co.uk
+6281-FKEWS,Female,0,No,No,44,No,No phone service,DSL,No,No,Yes,No,Yes,Yes,One year,Yes,ElectronicCheck,49.05,2265,No,test@yahoo.co.uk
+8898-KASCD,Male,0,No,No,39,No,No phone service,DSL,No,No,Yes,Yes,No,No,One year,No,MailedCheck,35.55,1309.15,No,test@yahoo.co.uk
+9242-TKFSV,Male,0,Yes,Yes,72,No,No phone service,DSL,Yes,Yes,Yes,Yes,Yes,Yes,Two year,Yes,CreditCard,65.1,4754.3,No,test@yahoo.co.uk
+9290-SHCMB,Female,1,No,No,13,Yes,No,Fiber optic,No,No,Yes,No,Yes,Yes,Month-to-month,Yes,ElectronicCheck,96.85,1235.55,No,test@yahoo.co.uk
+0743-HNPFG,Female,0,Yes,Yes,51,Yes,No,DSL,Yes,Yes,No,Yes,No,Yes,One year,Yes,CreditCard,69.75,3562.5,No,test@yahoo.co.uk
+2277-BKJKN,Female,1,Yes,No,71,Yes,No,Fiber optic,No,Yes,Yes,No,Yes,Yes,Two year,Yes,CreditCard,99.2,7213.75,No,test@yahoo.co.uk
+9809-IMGCQ,Male,1,No,No,22,Yes,Yes,Fiber optic,No,No,No,No,Yes,Yes,Month-to-month,Yes,ElectronicCheck,96.7,2082.95,Yes,test@yahoo.co.uk
+5208-HFSBT,Female,0,No,No,2,Yes,No,DSL,No,Yes,No,Yes,No,No,Month-to-month,Yes,ElectronicCheck,55.05,102.75,Yes,test@yahoo.co.uk
+5035-PGZXH,Female,0,No,No,56,Yes,Yes,Fiber optic,No,Yes,Yes,No,Yes,Yes,One year,Yes,ElectronicCheck,106.8,5914.4,No,test@yahoo.co.uk
+8695-WDYEA,Male,0,No,No,1,Yes,No,DSL,Yes,No,No,No,No,No,Month-to-month,No,MailedCheck,51.25,51.25,No,test@yahoo.co.uk
+6543-JXSOO,Female,0,Yes,Yes,23,Yes,No,DSL,Yes,Yes,No,Yes,No,No,One year,Yes,MailedCheck,57.75,1282.85,No,test@yahoo.co.uk
+8016-ZMGMO,Female,1,Yes,No,66,Yes,Yes,DSL,No,Yes,Yes,No,Yes,No,One year,Yes,ElectronicCheck,70.85,4738.85,No,test@yahoo.co.uk
+8605-ITULD,Female,0,No,No,1,Yes,No,No,No internet service,No internet service,No internet service,No internet service,No internet service,No internet service,Month-to-month,No,MailedCheck,19.55,19.55,No,test@yahoo.co.uk
+3254-YRILK,Male,1,No,No,19,Yes,Yes,Fiber optic,No,Yes,No,No,Yes,No,Month-to-month,Yes,ElectronicCheck,88.2,1775.8,Yes,test@yahoo.co.uk
+6416-YJTTB,Male,0,No,No,11,Yes,No,Fiber optic,Yes,No,Yes,No,No,No,Month-to-month,Yes,ElectronicCheck,79.5,795.65,No,test@yahoo.co.uk
+2667-WYLWJ,Female,0,Yes,Yes,8,Yes,No,No,No internet service,No internet service,No internet service,No internet service,No internet service,No internet service,One year,Yes,MailedCheck,19.75,145,Yes,test@yahoo.co.uk
+4472-VESGY,Female,0,Yes,Yes,52,Yes,Yes,Fiber optic,Yes,Yes,Yes,No,No,Yes,Month-to-month,No,ElectronicCheck,98.15,4993.4,No,test@yahoo.co.uk
+3195-TQDZX,Male,0,No,No,3,Yes,No,No,No internet service,No internet service,No internet service,No internet service,No internet service,No internet service,Month-to-month,Yes,ElectronicCheck,20.25,61.45,No,test@yahoo.co.uk
+3128-YOVTD,Female,0,Yes,Yes,51,Yes,No,Fiber optic,Yes,Yes,No,No,No,No,Month-to-month,Yes,BankTransfer,79.15,4018.55,No,test@yahoo.co.uk
+0529-ONKER,Male,1,No,No,15,Yes,Yes,Fiber optic,No,No,No,No,No,No,Month-to-month,No,ElectronicCheck,75.65,1146.65,Yes,test@yahoo.co.uk
+1728-CXQBE,Male,1,Yes,No,64,Yes,Yes,Fiber optic,No,Yes,Yes,No,No,Yes,Month-to-month,Yes,ElectronicCheck,94.25,6081.4,No,test@yahoo.co.uk
+7041-TXQJH,Female,0,No,No,37,No,No phone service,DSL,No,No,Yes,No,No,Yes,Month-to-month,Yes,ElectronicCheck,40.2,1478.85,No,test@yahoo.co.uk
+

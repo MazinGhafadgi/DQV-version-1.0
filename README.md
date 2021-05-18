@@ -25,9 +25,19 @@ Efficient processing should be engineered. Invocation of this efficient processi
 
 sbt "runMain dqv.vonneumann.dataqulaity.app.DataQualityCheckApp runMain dqv.vonneumann.dataqulaity.app.DataQualityCheckApp -b data-quality-acoe -y config.yml -m local -c RSVDATE -f yyyy/MM/dd -s 2018/04/29 -e 2020/01/08"
 
+
+
 ##  Or
 sbt
 runMain dqv.vonneumann.dataqulaity.app.DataQualityCheckApp -b data-quality-acoe -y config.yml -m local -c RSVDATE -f yyyy/MM/dd -s 2018/04/29 -e 2020/01/08
+
+
+src/main/resources/telco/telco-sample-customer-chum.csv
+
+#CSV
+src/main/resources/telco/telco-sample-customer-chum.csv
+#Parquet
+src/main/resources/sample/
 
 # tools to convert from json to YML.
 # https://www.json2yaml.com/

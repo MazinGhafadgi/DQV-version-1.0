@@ -4,42 +4,17 @@
 ##############################################################################
 - process.type: Batch
   sink.type: Console
-  report.type: Percentage
+  quality.check.type: QualityCheck
   source:
     source.type: CSV
     source.path: src/main/resources/telco/telco-sample-customer-chum.csv
 
-  #Telco Data quality rules
   rules:
-    - rule:
-        type: NullCheck
-        value: customerID,gender,SeniorCitizen,Partner,Dependents,tenure,PhoneService,MultipleLines,InternetService,OnlineSecurity,OnlineBackup,DeviceProtection,TechSupport,StreamingTV,StreamingMovies,Contract,PaperlessBilling,PaymentMethod,MonthlyCharges,TotalCharges,Churn
-        description: Null check failures
-    - rule:
-        type: InRangeCheck
-        value: gender=Male,Female;PaymentMethod=ElectronicCheck,MailedCheck,CreditCard,BankTransfer
-        description: In range check failures
     - rule:
         type: NonNegativeCheck
-        value: TotalCharges,SeniorCitizen
-        description: Negative check failures
-    - rule:
-        type: UniquenessCheck
-        value: customerID
-        description: Uniqueness check failures
-
-
-#Sample parquet file
-- process.type: Batch
-  sink.type: Console
-  report.type: Count
-  source:
-    source.type: Parquet
-    source.path: src/main/resources/sample/
-  # parquet Data quality rules
-  rules:
+        column: TotalCharges:DOUBLE
+        description: test
     - rule:
         type: NullCheck
-        value: age
-        description: Null check failures
-
+        column: gender:STRING
+        description: test

@@ -20,3 +20,28 @@ https://github.com/GoogleCloudDataproc/spark-bigquery-connector
 
 -- visualize-data-studio
 https://cloud.google.com/bigquery/docs/visualize-data-studio
+
+-- Scala collect
+https://medium.com/@sergigp/using-scala-collect-3a9880f71e23
+
+-- CountMinSketchOnSpark
+https://github.com/viirya/CountMinSketchOnSpark
+
+-- data-profiling-best-practices
+-- https://panoply.io/analytics-stack-guide/data-profiling-best-practices/
+
+-- json schema
+https://json-schema.org/understanding-json-schema/reference/conditionals.html
+
+
+-- how to add two columns
+df = df.withColumn('result', sum(df[col] for col in df.columns))
+https://stackoverflow.com/questions/53297872/how-can-i-sum-multiple-columns-in-a-spark-dataframe-in-pyspark
+
+-- PII
+https://docs.oracle.com/en-us/iaas/data-safe/doc/sensitive-types.html
+
+
+-- Regx for UK phone number
+https://help.relativity.com/RelativityOne/Content/Relativity/Regular_expressions/Searching_with_regular_expressions.htm
+

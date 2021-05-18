@@ -11,7 +11,7 @@ sbt clean assembly
 ./google-cloud-sdk/bin/gsutil cp /target/scala-2.12/Data-quality-tool.jar gs://data-quality-acoe
 
 # create cluster
-gcloud beta dataproc clusters create cluster-5cac-test \
+gcloud beta dataproc clusters create cluster-bdf6 \
 --region europe-west1 \
 --zone europe-west1-b \
 --master-machine-type n1-standard-4 \
@@ -20,16 +20,18 @@ gcloud beta dataproc clusters create cluster-5cac-test \
 --worker-machine-type n1-standard-4 \
 --worker-boot-disk-size 500 \
 --image-version 2.0-debian10 \
---project vf-grp-acoe-tst-dfq-01
+--project formal-being-313012
 
- ./google-cloud-sdk/bin/gcloud dataproc jobs submit spark \
-       --project vf-grp-acoe-tst-dfq-01 \
-       --cluster cluster-5cac-test-m \
+# clusterMame= cluster-bdf6
+# project id = formal-being-313012
+
+ gcloud dataproc jobs submit spark \
+       --project formal-being-313012 \
+       --cluster cluster-bdf6 \
        --region europe-west1 \
-       --class vodafone.dataqulaity.app.DataQualityCheckApp \
-       --jars gs://data-quality-acoe/Data-quality-tool-1.0.jar \
-       --properties="spark.submit.deployMode=cluster" \
-       -- --bucket data-quality-acoe --jsonFile profile.json --mode cluster --column RSVDATE --format yyyy/MM/dd --startDate 2018/04/29 --endDate 2020/01/08
+       --class dqv.vonneumann.dataqulaity.app.DataQualityCheckApp \
+       --jars gs://test-dqv-check/Data-quality-tool-1.0.jar \
+       -- --bucket test-dqv-check --yml config.yml --mode cluster --column RSVDATE --format yyyy/MM/dd --startDate 2018/04/29 --endDate 2020/01/08
 
 # shutdown the cluster
 gcloud dataproc clusters delete cluster-5ac-test --region=europe-west1

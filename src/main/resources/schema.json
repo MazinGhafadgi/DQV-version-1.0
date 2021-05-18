@@ -1,5 +1,6 @@
+
 {
-  "$schema": "http://vonneumann.com/schemas/myschema.json#",
+  ""schema" : "http://vonneumann.com/schemas/myschema.json#",
   "type": "array",
   "uniqueItems": true,
   "items": {
@@ -18,9 +19,9 @@
           "type": "string",
           "enum": ["Console", "BigQuery"]
         },
-        "report.type": {
+        "quality.check.type": {
           "type": "string",
-          "enum": ["Percentage", "Count"]
+          "enum": ["Reconcile", "QualityCheck"]
         },
         "source": {
           "$ref": "#/definitions/Source"
@@ -36,13 +37,34 @@
           }
         }
       },
-      "required": [
-        "process.type",
-        "report.type",
-        "rules",
-        "sink.type",
-        "source"
-      ],
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "quality.check.type": {
+                "const": "Reconcile"
+              }
+            }
+          },
+          "then" : {
+          "required": [
+            "process.type",
+            "rules",
+            "sink.type",
+            "source",
+            "target"
+          ]
+          },
+          "else": {
+            "required": [
+              "process.type",
+              "rules",
+              "sink.type",
+              "quality.check.type",
+              "source"
+            ]
+          }
+        }],
       "title": "Welcome5Element"
     },
     "RuleElement": {
@@ -64,19 +86,29 @@
       "properties": {
         "type": {
           "type": "string",
-          "enum": ["NullCheck", "InRangeCheck", "NonNegativeCheck", "UniquenessCheck"]
+          "enum": ["NullCheck", "InRangeCheck", "NonNegativeCheck", "UniquenessCheck", "PositiveCheck", "EmailCheck", "MSISDNCheck", "ReconcileRule"]
         },
-        "value": {
-          "type": "string"
+        "column": {
+          "type": "string",
+          "enum": ["customerID:STRING","gender:STRING","SeniorCitizen:STRING","Partner:STRING","Dependents:STRING","tenure:INTEGER","PhoneService:STRING","MultipleLines:STRING","InternetService:STRING","OnlineSecurity:STRING","OnlineBackup:STRING","DeviceProtection:STRING","TechSupport:STRING","StreamingTV:STRING","StreamingMovies:STRING","Contract:STRING","PaperlessBilling:STRING","PaymentMethod:STRING","MonthlyCharges:DOUBLE","TotalCharges:DOUBLE","Churn:STRING","EmailAddress:STRING"]
         },
         "description": {
           "type": "string"
         }
       },
+      "if": {
+        "properties": { "type": { "enum": ["NonNegativeCheck", "PositiveCheck"] } }
+      },
+      "then": {
+        "properties": { "column": { "pattern": "\b(?:INTEGER|LONG|DOUBLE)\b" } }
+      },
+      "else": {
+        "properties": { "column": { "pattern": "^." } }
+      },
       "required": [
         "description",
         "type",
-        "value"
+        "column"
       ],
       "title": "RuleRule"
     },
@@ -140,3 +172,4 @@
     }
   }
 }
+        

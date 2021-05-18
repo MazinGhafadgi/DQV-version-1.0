@@ -1,11 +1,13 @@
 package dqv.vonneumann.dataqulaity.app
 
 import dqv.vonneumann.dataqulaity.config.{ConfigurationContext, ConfigurationContextFactory, DQJobConfig, YAMConfigLoader}
+import dqv.vonneumann.dataqulaity.enums.QualityCheckType
+import dqv.vonneumann.dataqulaity.enums.QualityCheckType.QualityCheckType
 import dqv.vonneumann.dataqulaity.reconciler.InvalidConfigurationRule
-import dqv.vonneumann.dataqulaity.reconciler.RulesExecutor.{execute, executeReconciler}
+import dqv.vonneumann.dataqulaity.rules.RulesExecutor.{execute, executeReconciler}
 import dqv.vonneumann.dataqulaity.sparksession.SparkSessionFactory.createSparkSession
 import io.circe.{Json, ParsingFailure}
-import org.apache.spark.sql.SparkSession
+import org.apache.spark.sql.{SaveMode, SparkSession}
 import org.slf4j.LoggerFactory
 
 object DataQualityCheckApp {
@@ -28,9 +30,10 @@ object DataQualityCheckApp {
       .fold(
         error            => reportErrors(error, dqJobConfig),
         dqConfigurations => {
-          if( dqConfigurations.map(_.targetType.toString).filter(x => x =="Null").nonEmpty)
-              processDQConfiguration(dqConfigurations, dqJobConfig)
-          else reconcile(dqConfigurations)
+          dqConfigurations.map(_.qualityCheckType).head match {
+            case QualityCheckType.QualityCheck => processDQConfiguration(dqConfigurations, dqJobConfig)
+            case QualityCheckType.Reconcile =>   reconcile(dqConfigurations)
+          }
         }
       )
   }
@@ -44,23 +47,24 @@ object DataQualityCheckApp {
           case "Parquet" =>
             val df = sparkSession.read.parquet(configurationContext.sourcePath)
             val result =  execute(configurationContext, df)
-            result.reduce((df1, df2) => df1.union(df2))
+           // result.reduce((df1, df2) => df1.union(df2))
 
           case "CSV" =>
             val df = sparkSession.read.option("header", "true").option("inferSchema", "true").csv(configurationContext.sourcePath)
             val result =  execute(configurationContext, df)
-            result.reduce((df1, df2) => df1.union(df2))
+           // result.reduce((df1, df2) => df1.union(df2))
 
           case "BigQuery" =>
             val df = sparkSession.read.format("bigquery").load(configurationContext.sourcePath)
             val result =  execute(configurationContext, df)
-            result.reduce((df1, df2) => df1.union(df2))
+           // result.reduce((df1, df2) => df1.union(df2))
         }
       }
     }
-    val report = resports.reduce((ds1, ds2) => ds1.union(ds2))
-    report.show(100,false)
-    //report.write.format("com.databricks.spark.csv").save("report")
+   // val report = resports.reduce((ds1, ds2) => ds1.union(ds2))
+   // report.show(100,false)
+   // report.write.format("com.databricks.spark.csv").save("report")
+   // report.write.format("bigquery").option("temporaryGcsBucket","test-dqv-check").mode(SaveMode.Append).save("dqvdataset.DQVTable")
     //report.write.csv("src/main/resources/report")
 
   }
