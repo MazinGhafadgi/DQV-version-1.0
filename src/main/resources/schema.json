@@ -96,6 +96,15 @@
           "type": "string"
         }
       },
+      "if": {
+        "properties": { "type": { "enum": ["NonNegativeCheck", "PositiveCheck"] } }
+      },
+      "then": {
+        "properties": { "column": { "pattern": "\b(?:INTEGER|LONG|DOUBLE)\b" } }
+      },
+      "else": {
+        "properties": { "column": { "pattern": "^." } }
+      },
       "required": [
         "description",
         "type",
@@ -110,7 +119,7 @@
         "source.type": {
           "type": "string",
           "default" : "CSV",
-          "enum": ["CSV", "Parquet", "BigQuery", "OneMore4"]
+          "enum": ["CSV", "Parquet", "BigQuery"]
         },
         "source.path": {
           "type": "string",

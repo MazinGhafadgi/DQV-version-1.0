@@ -39,6 +39,7 @@ object YAMLSchemaApp extends App {
   val columns = s"""$dfColumns"""
 
   val doubleQColumns = "[" + columns.replaceAll("([\\w:]+)", "\"$1\"") + "]"
+  val word = "\\b(?:INTEGER|LONG|DOUBLE)\\b"
 
   val inputString =
     s"""
@@ -139,6 +140,15 @@ object YAMLSchemaApp extends App {
           |          "type": "string"
           |        }
           |      },
+          |      "if": {
+          |        "properties": { "type": { "enum": ["NonNegativeCheck", "PositiveCheck"] } }
+          |      },
+          |      "then": {
+          |        "properties": { "column": { "pattern": "$word" } }
+          |      },
+          |      "else": {
+          |        "properties": { "column": { "pattern": "^." } }
+          |      },
           |      "required": [
           |        "description",
           |        "type",
@@ -153,7 +163,7 @@ object YAMLSchemaApp extends App {
           |        "source.type": {
           |          "type": "string",
           |          "default" : "CSV",
-          |          "enum": ["CSV", "Parquet", "BigQuery", "OneMore4"]
+          |          "enum": ["CSV", "Parquet", "BigQuery"]
           |        },
           |        "source.path": {
           |          "type": "string",
