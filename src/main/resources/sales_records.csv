@@ -1,0 +1,4 @@
+Region,Country,ItemType,SalesChannel,OrderPriority,OrderDate,OrderID,ShipDate,UnitsSold,UnitPrice,UnitCost,TotalRevenue,TotalCost,TotalProfit
+Australia and Oceania,Australia,Meat,Online,C,4/4/2011,451691138,5/23/2011,4300,421.89,364.69,1814127.00,1568167.00,245960.00
+Asia,Tajikistan,Personal Care,Online,L,7/12/2018,144177377,8/1/2018,4145,81.73,56.67,338770.85,234897.15,103873.70
+Sub-Saharan Africa,Mozambique,Cosmetics,Online,H,7/6/2011,982716166,7/17/2011,6407,437.20,263.33,2801140.40,1687155.31,1113985.09
