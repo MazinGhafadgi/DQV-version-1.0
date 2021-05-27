@@ -27,7 +27,7 @@ gcloud beta dataproc clusters create cluster-bdf6 \
 
  gcloud dataproc jobs submit spark \
        --project formal-being-313012 \
-       --cluster cluster-bdf6 \
+       --cluster cluster-23b9 \
        --region europe-west1 \
        --class dqv.vonneumann.dataqulaity.app.DataQualityCheckApp \
        --jars gs://test-dqv-check/Data-quality-tool-1.0.jar \
